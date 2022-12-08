@@ -7,9 +7,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{347A782E-D5B
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FantasySky.CustomDF", "src\FantasySky.CustomDF\FantasySky.CustomDF.csproj", "{9AFE963E-B0DD-4C1D-8B7C-18ACD33F4E9A}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{440387C2-A709-4EEC-B3A5-41F8DE063392}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FantasySky.CustomDF.Core", "FantasySky.CustomDF.Core\FantasySky.CustomDF.Core.csproj", "{4E34B6CD-9805-47EA-B24F-B961DB1433A4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FantaasySky.CustomDF.Core", "FantaasySky.CustomDF.Core\FantaasySky.CustomDF.Core.csproj", "{4E34B6CD-9805-47EA-B24F-B961DB1433A4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FantasySky.CustomDF.EntityFrameworkCore", "FantasySky.CustomDF.EntityFrameworkCore\FantasySky.CustomDF.EntityFrameworkCore.csproj", "{7C802C2F-17CF-459F-826F-B7695C8BE210}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{440387C2-A709-4EEC-B3A5-41F8DE063392}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -25,6 +27,10 @@ Global
 		{4E34B6CD-9805-47EA-B24F-B961DB1433A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4E34B6CD-9805-47EA-B24F-B961DB1433A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4E34B6CD-9805-47EA-B24F-B961DB1433A4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7C802C2F-17CF-459F-826F-B7695C8BE210}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7C802C2F-17CF-459F-826F-B7695C8BE210}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7C802C2F-17CF-459F-826F-B7695C8BE210}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7C802C2F-17CF-459F-826F-B7695C8BE210}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -32,6 +38,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{9AFE963E-B0DD-4C1D-8B7C-18ACD33F4E9A} = {347A782E-D5BC-4DB0-AB89-6062B411477D}
 		{4E34B6CD-9805-47EA-B24F-B961DB1433A4} = {347A782E-D5BC-4DB0-AB89-6062B411477D}
+		{7C802C2F-17CF-459F-826F-B7695C8BE210} = {347A782E-D5BC-4DB0-AB89-6062B411477D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {BA9D7F87-48DF-4183-8676-C19CDDAAC484}
