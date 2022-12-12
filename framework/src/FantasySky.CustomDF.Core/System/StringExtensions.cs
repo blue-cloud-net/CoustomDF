@@ -1,3 +1,9 @@
+using System.Diagnostics.CodeAnalysis;
+using System.Security.Cryptography;
+using System.Text;
+
+using FantasySky.CustomDF;
+
 namespace System;
 
 /// <summary>
@@ -67,5 +73,52 @@ public static class StringExtensions
     public static string[] SplitToLines(this string str, StringSplitOptions options)
     {
         return str.Split(Environment.NewLine, options);
+    }
+
+    /// <summary>
+    /// Converts string to enum value.
+    /// </summary>
+    /// <typeparam name="T">Type of enum</typeparam>
+    /// <param name="value">String value to convert</param>
+    /// <returns>Returns enum object</returns>
+    public static T ToEnum<T>(this string value)
+        where T : struct
+    {
+        Check.IsNotNull(value, nameof(value));
+        return (T)Enum.Parse(typeof(T), value);
+    }
+
+    public static string ToMd5(this string str)
+    {
+        using var md5 = MD5.Create();
+        var inputBytes = Encoding.UTF8.GetBytes(str);
+        var hashBytes = md5.ComputeHash(inputBytes);
+
+        var sb = new StringBuilder();
+        foreach (var hashByte in hashBytes)
+        {
+            sb.Append(hashByte.ToString("X2"));
+        }
+
+        return sb.ToString();
+    }
+
+    /// <summary>
+    /// Converts given string to a byte array using <see cref="Encoding.UTF8"/> encoding.
+    /// </summary>
+    public static byte[] GetBytes(this string str)
+    {
+        return str.GetBytes(Encoding.UTF8);
+    }
+
+    /// <summary>
+    /// Converts given string to a byte array using the given <paramref name="encoding"/>
+    /// </summary>
+    public static byte[] GetBytes([NotNull] this string str, [NotNull] Encoding encoding)
+    {
+        Check.IsNotNull(str, nameof(str));
+        Check.IsNotNull(encoding, nameof(encoding));
+
+        return encoding.GetBytes(str);
     }
 }
