@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 
@@ -10,7 +12,7 @@ namespace FantasySky.CustomDF;
 public static class Check
 {
     public static T IsNotNull<T>(
-        [NotNullIfNotNull(nameof(value))] T value,
+        T value,
         string parameterName)
     {
         if (value == null)
@@ -22,7 +24,7 @@ public static class Check
     }
 
     public static T IsNotNull<T>(
-        [NotNullIfNotNull(nameof(value))] T value,
+        T value,
         string parameterName,
         string message)
     {
@@ -35,7 +37,7 @@ public static class Check
     }
 
     public static string IsNotNullOrWhiteSpace(
-        [NotNullIfNotNull(nameof(value))] string value,
+        string value,
         string parameterName)
     {
         if (value.IsNullOrWhiteSpace())
@@ -47,7 +49,7 @@ public static class Check
     }
 
     public static string IsNotNullOrEmpty(
-        [NotNullIfNotNull(nameof(value))] string value,
+        string value,
         string parameterName)
     {
         if (value.IsNullOrEmpty())
@@ -59,7 +61,7 @@ public static class Check
     }
 
     public static ICollection<T> IsNotNullOrEmpty<T>(
-        [NotNullIfNotNull(nameof(value))]ICollection<T> value, 
+        ICollection<T> value,
         string parameterName)
     {
         if (value.IsNullOrEmpty())
@@ -71,7 +73,7 @@ public static class Check
     }
 
     public static T IsNotDefaultOrNull<T>(
-        [NotNullIfNotNull(nameof(value))] T? value,
+        T? value,
         string parameterName)
         where T : struct
     {

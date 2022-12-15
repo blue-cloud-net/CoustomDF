@@ -7,13 +7,18 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{347A782E-D5B
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FantasySky.CustomDF", "src\FantasySky.CustomDF\FantasySky.CustomDF.csproj", "{9AFE963E-B0DD-4C1D-8B7C-18ACD33F4E9A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FantasySky.CustomDF.Core", "FantasySky.CustomDF.Core\FantasySky.CustomDF.Core.csproj", "{4E34B6CD-9805-47EA-B24F-B961DB1433A4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FantasySky.CustomDF.Core", "src\FantasySky.CustomDF.Core\FantasySky.CustomDF.Core.csproj", "{4E34B6CD-9805-47EA-B24F-B961DB1433A4}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FantasySky.CustomDF.EntityFrameworkCore", "FantasySky.CustomDF.EntityFrameworkCore\FantasySky.CustomDF.EntityFrameworkCore.csproj", "{7C802C2F-17CF-459F-826F-B7695C8BE210}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FantasySky.CustomDF.EntityFrameworkCore", "src\FantasySky.CustomDF.EntityFrameworkCore\FantasySky.CustomDF.EntityFrameworkCore.csproj", "{7C802C2F-17CF-459F-826F-B7695C8BE210}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{440387C2-A709-4EEC-B3A5-41F8DE063392}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "doc", "doc", "{FC522A82-0CDC-48C1-9F17-4B6A7984361F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{A1E92215-0BCB-47D4-9F3A-1ED2E3384ACD}"
+	ProjectSection(SolutionItems) = preProject
+		common.props = common.props
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
