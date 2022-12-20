@@ -3,6 +3,16 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33122.133
 MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{A1E92215-0BCB-47D4-9F3A-1ED2E3384ACD}"
+	ProjectSection(SolutionItems) = preProject
+		..\.editorconfig = ..\.editorconfig
+		..\.gitattributes = ..\.gitattributes
+		..\.gitignore = ..\.gitignore
+		common.props = common.props
+		..\Directory.Build.props = ..\Directory.Build.props
+		..\README.md = ..\README.md
+	EndProjectSection
+EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{347A782E-D5BC-4DB0-AB89-6062B411477D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FantasySky.CustomDF", "src\FantasySky.CustomDF\FantasySky.CustomDF.csproj", "{9AFE963E-B0DD-4C1D-8B7C-18ACD33F4E9A}"
@@ -11,18 +21,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FantasySky.CustomDF.Core", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FantasySky.CustomDF.EntityFrameworkCore", "src\FantasySky.CustomDF.EntityFrameworkCore\FantasySky.CustomDF.EntityFrameworkCore.csproj", "{7C802C2F-17CF-459F-826F-B7695C8BE210}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FantasySky.CustomDF.Ddd.Domain", "src\FantasySky.CustomDF.Ddd.Domain\FantasySky.CustomDF.Ddd.Domain.csproj", "{1863B629-31AB-48C1-BA12-0F31AC3A1036}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FantasySky.CustomDF.AspNetCore", "src\FantasySky.CustomDF.AspNetCore\FantasySky.CustomDF.AspNetCore.csproj", "{94F2E563-A9CD-4B1F-A8CA-094569C85C97}"
+EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{440387C2-A709-4EEC-B3A5-41F8DE063392}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "doc", "doc", "{FC522A82-0CDC-48C1-9F17-4B6A7984361F}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{A1E92215-0BCB-47D4-9F3A-1ED2E3384ACD}"
-	ProjectSection(SolutionItems) = preProject
-		common.props = common.props
-	EndProjectSection
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FantasySky.CustomDF.Ddd.Domain", "..\..\..\WorkSpace\git_src\certsalessystem\framework\src\FantasySky.CustomDF.Ddd.Domain\FantasySky.CustomDF.Ddd.Domain.csproj", "{1863B629-31AB-48C1-BA12-0F31AC3A1036}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FantasySky.CustomDF.AspNetCore", "..\..\..\WorkSpace\git_src\certsalessystem\framework\src\FantasySky.CustomDF.AspNetCore\FantasySky.CustomDF.AspNetCore.csproj", "{94F2E563-A9CD-4B1F-A8CA-094569C85C97}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

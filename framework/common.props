@@ -5,6 +5,8 @@
 		<NoWarn>$(NoWarn);CS1591;CS0436</NoWarn>
 		<RepositoryType>git</RepositoryType>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		
 		<RootNamespace />
+		<ImplicitUsings>enable</ImplicitUsings>
 	</PropertyGroup >
 </Project>
