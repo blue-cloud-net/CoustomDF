@@ -2,10 +2,6 @@
 
 	<Import Project="..\..\common.props" />
 
-	<PropertyGroup>
-		<TargetFramework>net7.0</TargetFramework>
-	</PropertyGroup>
-
 	<ItemGroup>
 	  <ProjectReference Include="..\FantasySky.CustomDF.Ddd.Domain\FantasySky.CustomDF.Ddd.Domain.csproj" />
 	</ItemGroup>

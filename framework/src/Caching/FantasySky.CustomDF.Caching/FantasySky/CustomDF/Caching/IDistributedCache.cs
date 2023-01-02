@@ -192,8 +192,8 @@ public interface IDistributedCache<TCacheItem, TCacheKey>
     /// <returns>The <see cref="T:System.Threading.Tasks.Task" /> indicating that the operation is asynchronous.</returns>
     Task SetAsync(
         [NotNull] TCacheKey key,
-    [NotNull] TCacheItem value,
-        [CanBeNull] DistributedCacheEntryOptions options = null,
+        [NotNull] TCacheItem value,
+        [AllowNull] DistributedCacheEntryOptions options = null,
         bool? hideErrors = null,
         bool considerUow = false,
         CancellationToken token = default
