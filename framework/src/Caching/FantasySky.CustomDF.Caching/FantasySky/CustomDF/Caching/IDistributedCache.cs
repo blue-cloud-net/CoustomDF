@@ -23,6 +23,8 @@ public interface IDistributedCache<TCacheItem> : IDistributedCache<TCacheItem, s
 public interface IDistributedCache<TCacheItem, TCacheKey>
     where TCacheItem : class
 {
+    #region Basic
+
     /// <summary>
     /// Gets a cache item with the given key. If no cache item is found for the given key then returns null.
     /// </summary>
@@ -101,7 +103,7 @@ public interface IDistributedCache<TCacheItem, TCacheKey>
     TCacheItem GetOrAdd(
         TCacheKey key,
         Func<TCacheItem> factory,
-        Func<DistributedCacheEntryOptions> optionsFactory = null,
+        Func<DistributedCacheEntryOptions>? optionsFactory = null,
         bool? hideErrors = null,
         bool considerUow = false
     );
@@ -120,7 +122,7 @@ public interface IDistributedCache<TCacheItem, TCacheKey>
     Task<TCacheItem> GetOrAddAsync(
         [NotNull] TCacheKey key,
         Func<Task<TCacheItem>> factory,
-        Func<DistributedCacheEntryOptions> optionsFactory = null,
+        Func<DistributedCacheEntryOptions>? optionsFactory = null,
         bool? hideErrors = null,
         bool considerUow = false,
         CancellationToken token = default
@@ -139,7 +141,7 @@ public interface IDistributedCache<TCacheItem, TCacheKey>
     KeyValuePair<TCacheKey, TCacheItem>[] GetOrAddMany(
         IEnumerable<TCacheKey> keys,
         Func<IEnumerable<TCacheKey>, List<KeyValuePair<TCacheKey, TCacheItem>>> factory,
-        Func<DistributedCacheEntryOptions> optionsFactory = null,
+        Func<DistributedCacheEntryOptions>? optionsFactory = null,
         bool? hideErrors = null,
         bool considerUow = false
     );
@@ -158,7 +160,7 @@ public interface IDistributedCache<TCacheItem, TCacheKey>
     Task<KeyValuePair<TCacheKey, TCacheItem>[]> GetOrAddManyAsync(
         IEnumerable<TCacheKey> keys,
         Func<IEnumerable<TCacheKey>, Task<List<KeyValuePair<TCacheKey, TCacheItem>>>> factory,
-        Func<DistributedCacheEntryOptions> optionsFactory = null,
+        Func<DistributedCacheEntryOptions>? optionsFactory = null,
         bool? hideErrors = null,
         bool considerUow = false,
         CancellationToken token = default
@@ -175,7 +177,7 @@ public interface IDistributedCache<TCacheItem, TCacheKey>
     void Set(
         TCacheKey key,
         TCacheItem value,
-        DistributedCacheEntryOptions options = null,
+        DistributedCacheEntryOptions? options = null,
         bool? hideErrors = null,
         bool considerUow = false
     );
@@ -191,9 +193,9 @@ public interface IDistributedCache<TCacheItem, TCacheKey>
     /// <param name="token">The <see cref="T:System.Threading.CancellationToken" /> for the task.</param>
     /// <returns>The <see cref="T:System.Threading.Tasks.Task" /> indicating that the operation is asynchronous.</returns>
     Task SetAsync(
-        [NotNull] TCacheKey key,
-        [NotNull] TCacheItem value,
-        [AllowNull] DistributedCacheEntryOptions options = null,
+        TCacheKey key,
+        TCacheItem value,
+        DistributedCacheEntryOptions? options = null,
         bool? hideErrors = null,
         bool considerUow = false,
         CancellationToken token = default
@@ -209,7 +211,7 @@ public interface IDistributedCache<TCacheItem, TCacheKey>
     /// <param name="considerUow">This will store the cache in the current unit of work until the end of the current unit of work does not really affect the cache.</param>
     void SetMany(
         IEnumerable<KeyValuePair<TCacheKey, TCacheItem>> items,
-        DistributedCacheEntryOptions options = null,
+        DistributedCacheEntryOptions? options = null,
         bool? hideErrors = null,
         bool considerUow = false
     );
@@ -226,7 +228,7 @@ public interface IDistributedCache<TCacheItem, TCacheKey>
     /// <returns>The <see cref="T:System.Threading.Tasks.Task" /> indicating that the operation is asynchronous.</returns>
     Task SetManyAsync(
         IEnumerable<KeyValuePair<TCacheKey, TCacheItem>> items,
-        DistributedCacheEntryOptions options = null,
+        DistributedCacheEntryOptions? options = null,
         bool? hideErrors = null,
         bool considerUow = false,
         CancellationToken token = default
@@ -331,4 +333,21 @@ public interface IDistributedCache<TCacheItem, TCacheKey>
         bool considerUow = false,
         CancellationToken token = default
     );
+
+    #endregion
+
+    #region SortedSet
+    Task SortedSetAddAsync(
+        TCacheKey key,
+        double orderNumber,
+        TCacheItem value,
+        DistributedCacheEntryOptions? options = null,
+        CancellationToken cancellationToken = default);
+
+    Task<long> SortedSetCountAsync(
+        TCacheKey key,
+        double? min = null,
+        double? max = null,
+        CancellationToken cancellationToken = default);
+    #endregion
 }
