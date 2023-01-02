@@ -25,12 +25,22 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FantasySky.CustomDF.Ddd.Dom
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FantasySky.CustomDF.AspNetCore", "src\FantasySky.CustomDF.AspNetCore\FantasySky.CustomDF.AspNetCore.csproj", "{94F2E563-A9CD-4B1F-A8CA-094569C85C97}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Caching", "Caching", "{DDCB09F1-3118-44AA-88D2-018AF2189F66}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FantasySky.CustomDF.Caching", "src\Caching\FantasySky.CustomDF.Caching\FantasySky.CustomDF.Caching.csproj", "{3EAEED05-0E05-439D-B5E7-6B96C0552037}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FantasySky.CustomDF.Caching.StackExchangeRedis", "src\Caching\FantasySky.CustomDF.Caching.StackExchangeRedis\FantasySky.CustomDF.Caching.StackExchangeRedis.csproj", "{72E0C848-EE1D-4B43-8A4B-42EA5C275E8D}"
+EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{440387C2-A709-4EEC-B3A5-41F8DE063392}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "doc", "doc", "{FC522A82-0CDC-48C1-9F17-4B6A7984361F}"
 	ProjectSection(SolutionItems) = preProject
 		..\README.md = ..\README.md
 	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DistributedLocking", "DistributedLocking", "{3836D17E-1BB4-43C0-8B2D-DDFF0A48ABD6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FantasySky.CustomDF.DistributedLocking", "src\DistributedLocking\FantasySky.CustomDF.DistributedLocking\FantasySky.CustomDF.DistributedLocking.csproj", "{8A20163B-3C52-44D2-8AAC-E3127E44F8BB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -58,6 +68,18 @@ Global
 		{94F2E563-A9CD-4B1F-A8CA-094569C85C97}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{94F2E563-A9CD-4B1F-A8CA-094569C85C97}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{94F2E563-A9CD-4B1F-A8CA-094569C85C97}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3EAEED05-0E05-439D-B5E7-6B96C0552037}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3EAEED05-0E05-439D-B5E7-6B96C0552037}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3EAEED05-0E05-439D-B5E7-6B96C0552037}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3EAEED05-0E05-439D-B5E7-6B96C0552037}.Release|Any CPU.Build.0 = Release|Any CPU
+		{72E0C848-EE1D-4B43-8A4B-42EA5C275E8D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{72E0C848-EE1D-4B43-8A4B-42EA5C275E8D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{72E0C848-EE1D-4B43-8A4B-42EA5C275E8D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{72E0C848-EE1D-4B43-8A4B-42EA5C275E8D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8A20163B-3C52-44D2-8AAC-E3127E44F8BB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8A20163B-3C52-44D2-8AAC-E3127E44F8BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8A20163B-3C52-44D2-8AAC-E3127E44F8BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8A20163B-3C52-44D2-8AAC-E3127E44F8BB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -68,6 +90,11 @@ Global
 		{7C802C2F-17CF-459F-826F-B7695C8BE210} = {347A782E-D5BC-4DB0-AB89-6062B411477D}
 		{1863B629-31AB-48C1-BA12-0F31AC3A1036} = {347A782E-D5BC-4DB0-AB89-6062B411477D}
 		{94F2E563-A9CD-4B1F-A8CA-094569C85C97} = {347A782E-D5BC-4DB0-AB89-6062B411477D}
+		{DDCB09F1-3118-44AA-88D2-018AF2189F66} = {347A782E-D5BC-4DB0-AB89-6062B411477D}
+		{3EAEED05-0E05-439D-B5E7-6B96C0552037} = {DDCB09F1-3118-44AA-88D2-018AF2189F66}
+		{72E0C848-EE1D-4B43-8A4B-42EA5C275E8D} = {DDCB09F1-3118-44AA-88D2-018AF2189F66}
+		{3836D17E-1BB4-43C0-8B2D-DDFF0A48ABD6} = {347A782E-D5BC-4DB0-AB89-6062B411477D}
+		{8A20163B-3C52-44D2-8AAC-E3127E44F8BB} = {3836D17E-1BB4-43C0-8B2D-DDFF0A48ABD6}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {BA9D7F87-48DF-4183-8676-C19CDDAAC484}
