@@ -1,11 +1,8 @@
-using System.Diagnostics.CodeAnalysis;
-
 using Microsoft.Extensions.DependencyInjection;
 
 namespace FantasySky.CustomDF;
 public class ApplicationCreationOptions
 {
-    [NotNull]
     public IServiceCollection Services { get; }
 
     /// <summary>
@@ -18,7 +15,7 @@ public class ApplicationCreationOptions
 
     public string? ApplicationName { get; set; }
 
-    public ApplicationCreationOptions([NotNull] IServiceCollection services)
+    public ApplicationCreationOptions(IServiceCollection services)
     {
         this.Services = Check.IsNotNull(services, nameof(services));
 

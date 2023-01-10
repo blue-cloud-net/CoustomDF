@@ -21,7 +21,7 @@ public interface IApplication :
     /// Reference to the root service provider used by the application.
     /// This can not be used before initialize the application.
     /// </summary>
-    IServiceProvider ServiceProvider { get; }
+    IServiceProvider? ServiceProvider { get; }
 
     /// <summary>
     /// Used to gracefully shutdown the application and all modules.
