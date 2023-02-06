@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 
@@ -12,7 +10,7 @@ namespace FantasySky.CustomDF;
 public static class Check
 {
     public static T IsNotNull<T>(
-        T value,
+        [NotNull] T? value,
         string parameterName)
     {
         if (value == null)
@@ -24,7 +22,7 @@ public static class Check
     }
 
     public static T IsNotNull<T>(
-        T value,
+        [NotNull] T? value,
         string parameterName,
         string message)
     {
@@ -37,10 +35,10 @@ public static class Check
     }
 
     public static string IsNotNullOrWhiteSpace(
-        string value,
+        [NotNull] string? value,
         string parameterName)
     {
-        if (value.IsNullOrWhiteSpace())
+        if (value is null || value.IsNullOrWhiteSpace())
         {
             throw new ArgumentException($"{parameterName} can not be null, empty or white space!", parameterName);
         }
@@ -49,10 +47,10 @@ public static class Check
     }
 
     public static string IsNotNullOrEmpty(
-        string value,
+        [NotNull] string? value,
         string parameterName)
     {
-        if (value.IsNullOrEmpty())
+        if (value is null || value.IsNullOrEmpty())
         {
             throw new ArgumentException($"{parameterName} can not be null or empty!", parameterName);
         }
@@ -61,10 +59,10 @@ public static class Check
     }
 
     public static ICollection<T> IsNotNullOrEmpty<T>(
-        ICollection<T> value,
+        [NotNull] ICollection<T>? value,
         string parameterName)
     {
-        if (value.IsNullOrEmpty())
+        if (value is null || value.IsNullOrEmpty())
         {
             throw new ArgumentException(parameterName + " can not be null or empty!", parameterName);
         }
@@ -73,7 +71,7 @@ public static class Check
     }
 
     public static T IsNotDefaultOrNull<T>(
-        T? value,
+        [NotNull] T? value,
         string parameterName)
         where T : struct
     {
