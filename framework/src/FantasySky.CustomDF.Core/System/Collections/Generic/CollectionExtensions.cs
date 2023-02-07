@@ -5,7 +5,7 @@ using FantasySky.CustomDF;
 namespace System.Collections.Generic;
 
 /// <summary>
-/// Extension methods for <see cref="Collections"/>.
+/// Extension methods for <see cref="ICollection{T}"/>.
 /// </summary>
 public static class CollectionExtensions
 {

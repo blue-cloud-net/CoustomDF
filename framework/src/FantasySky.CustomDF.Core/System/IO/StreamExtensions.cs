@@ -1,3 +1,5 @@
+using System.Security.Cryptography;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -44,5 +46,30 @@ public static class StreamExtensions
             81920, //this is already the default value, but needed to set to be able to pass the cancellationToken
             cancellationToken
         );
+    }
+    public static string ToMd5(this Stream stream)
+    {
+        var hashBytes = MD5.HashData(stream);
+
+        var sb = new StringBuilder();
+        foreach (var hashByte in hashBytes)
+        {
+            sb.Append(hashByte.ToString("X2"));
+        }
+
+        return sb.ToString();
+    }
+
+    public static string ToSha256(this Stream stream)
+    {
+        var hashBytes = SHA256.HashData(stream);
+
+        var sb = new StringBuilder();
+        foreach (var hashByte in hashBytes)
+        {
+            sb.Append(hashByte.ToString("X2"));
+        }
+
+        return sb.ToString();
     }
 }
