@@ -1,4 +1,4 @@
-namespace FantasySky.CustomDF.Ddd.Domain.Values;
+namespace FantasySky.CustomDF.Domain.Values;
 
 //Inspired from https://docs.microsoft.com/en-us/dotnet/standard/microservices-architecture/microservice-ddd-cqrs-patterns/implement-value-objects
 

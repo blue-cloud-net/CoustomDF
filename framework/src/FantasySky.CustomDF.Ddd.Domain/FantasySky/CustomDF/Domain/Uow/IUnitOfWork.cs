@@ -1,4 +1,4 @@
-namespace FantasySky.CustomDF.Domain.Entities;
+namespace FantasySky.CustomDF.Domain.Uow;
 
 public interface IUnitOfWork : IDisposable
 {
