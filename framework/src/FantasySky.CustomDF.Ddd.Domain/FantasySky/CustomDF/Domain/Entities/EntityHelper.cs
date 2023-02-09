@@ -102,29 +102,6 @@ public static class EntityHelper
         return true;
     }
 
-    private static bool IsDefaultKeyValue(object value)
-    {
-        if (value == null)
-        {
-            return true;
-        }
-
-        var type = value.GetType();
-
-        //Workaround for EF Core since it sets int/long to min value when attaching to DbContext
-        if (type == typeof(int))
-        {
-            return Convert.ToInt32(value) <= 0;
-        }
-
-        if (type == typeof(long))
-        {
-            return Convert.ToInt64(value) <= 0;
-        }
-
-        return TypeHelper.IsDefaultValue(value);
-    }
-
     public static bool HasDefaultKeys([NotNull] IEntity entity)
     {
         Check.IsNotNull(entity, nameof(entity));
@@ -158,5 +135,28 @@ public static class EntityHelper
             x => x.TenantId,
             () => tenantId
         );
+    }
+
+    private static bool IsDefaultKeyValue(object value)
+    {
+        if (value == null)
+        {
+            return true;
+        }
+
+        var type = value.GetType();
+
+        //Workaround for EF Core since it sets int/long to min value when attaching to DbContext
+        if (type == typeof(int))
+        {
+            return Convert.ToInt32(value) <= 0;
+        }
+
+        if (type == typeof(long))
+        {
+            return Convert.ToInt64(value) <= 0;
+        }
+
+        return TypeHelper.IsDefaultValue(value);
     }
 }

@@ -4,9 +4,19 @@ namespace FantasySky.CustomDF.Domain.Values;
 
 public abstract class ValueObject
 {
-    protected abstract IEnumerable<object> GetAtomicValues();
+    public override bool Equals(object? obj)
+    {
+        return this.ValueEquals(obj);
+    }
 
-    public bool ValueEquals(object obj)
+    public override int GetHashCode()
+    {
+        return this.GetAtomicValues()
+            .Select(x => x != null ? x.GetHashCode() : 0)
+            .Aggregate((x, y) => x ^ y);
+    }
+
+    public bool ValueEquals(object? obj)
     {
         if (obj == null || obj.GetType() != this.GetType())
         {
@@ -43,4 +53,6 @@ public abstract class ValueObject
 
         return !thisMoveNext && !otherMoveNext;
     }
+
+    protected abstract IEnumerable<object?> GetAtomicValues();
 }

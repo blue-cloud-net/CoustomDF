@@ -2,11 +2,11 @@ namespace FantasySky.CustomDF.Domain.Entities;
 
 public interface IGeneratesDomainEvents
 {
-    IEnumerable<DomainEventRecord> GetLocalEvents();
-
-    IEnumerable<DomainEventRecord> GetDistributedEvents();
+    void ClearDistributedEvents();
 
     void ClearLocalEvents();
 
-    void ClearDistributedEvents();
+    IEnumerable<DomainEventRecord> GetDistributedEvents();
+
+    IEnumerable<DomainEventRecord> GetLocalEvents();
 }

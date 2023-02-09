@@ -10,12 +10,6 @@ public interface IReadOnlyRepository<TEntity> : IReadOnlyBasicRepository<TEntity
 {
     //IAsyncQueryableExecuter AsyncExecuter { get; }
 
-    Task<IQueryable<TEntity>> WithDetailsAsync(CancellationToken cancellationToken);
-
-    Task<IQueryable<TEntity>> WithDetailsAsync(CancellationToken cancellationToken,params Expression<Func<TEntity, object>>[] propertySelectors);
-
-    Task<IQueryable<TEntity>> GetQueryableAsync(CancellationToken cancellationToken);
-
     /// <summary>
     /// Gets a list of entities by the given <paramref name="predicate"/>.
     /// </summary>
@@ -26,10 +20,15 @@ public interface IReadOnlyRepository<TEntity> : IReadOnlyBasicRepository<TEntity
         [NotNull] Expression<Func<TEntity, bool>> predicate,
         bool includeDetails = false,
         CancellationToken cancellationToken = default);
+
+    Task<IQueryable<TEntity>> GetQueryableAsync(CancellationToken cancellationToken);
+
+    Task<IQueryable<TEntity>> WithDetailsAsync(CancellationToken cancellationToken);
+
+    Task<IQueryable<TEntity>> WithDetailsAsync(CancellationToken cancellationToken, params Expression<Func<TEntity, object>>[] propertySelectors);
 }
 
 public interface IReadOnlyRepository<TEntity, TKey> : IReadOnlyRepository<TEntity>, IReadOnlyBasicRepository<TEntity, TKey>
     where TEntity : class, IEntity<TKey>
 {
-
 }

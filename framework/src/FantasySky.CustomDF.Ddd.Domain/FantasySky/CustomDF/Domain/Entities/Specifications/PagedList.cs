@@ -3,6 +3,21 @@ namespace FantasySky.CustomDF.Domain.Entities.Specifications;
 public class PagedList<TEntity> : IPagedList<TEntity> where TEntity : IEntity
 {
     /// <summary>
+    /// 是否有下一页
+    /// </summary>
+    public bool HasNextPages { get; set; }
+
+    /// <summary>
+    /// 是否有上一页
+    /// </summary>
+    public bool HasPrevPages { get; set; }
+
+    /// <summary>
+    /// 当前页集合
+    /// </summary>
+    public IEnumerable<TEntity> Items { get; set; } = new List<TEntity>();
+
+    /// <summary>
     /// 页码
     /// </summary>
     public int PageIndex { get; set; }
@@ -21,19 +36,4 @@ public class PagedList<TEntity> : IPagedList<TEntity> where TEntity : IEntity
     /// 总页数
     /// </summary>
     public int TotalPages { get; set; }
-
-    /// <summary>
-    /// 当前页集合
-    /// </summary>
-    public IEnumerable<TEntity> Items { get; set; } = new List<TEntity>();
-
-    /// <summary>
-    /// 是否有上一页
-    /// </summary>
-    public bool HasPrevPages { get; set; }
-
-    /// <summary>
-    /// 是否有下一页
-    /// </summary>
-    public bool HasNextPages { get; set; }
 }

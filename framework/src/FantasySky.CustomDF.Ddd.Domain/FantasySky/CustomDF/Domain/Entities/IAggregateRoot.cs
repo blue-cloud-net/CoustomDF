@@ -6,7 +6,6 @@ namespace FantasySky.CustomDF.Domain.Entities;
 /// </summary>
 public interface IAggregateRoot : IEntity
 {
-
 }
 
 /// <summary>
@@ -15,5 +14,4 @@ public interface IAggregateRoot : IEntity
 /// <typeparam name="TKey">Type of the primary key of the entity</typeparam>
 public interface IAggregateRoot<TKey> : IEntity<TKey>, IAggregateRoot
 {
-
 }

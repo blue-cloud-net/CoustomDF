@@ -1,7 +1,10 @@
 namespace FantasySky.CustomDF.Domain.Entities.Auditing;
 
+/// <summary>
+/// Implements <see cref="IFullAuditedObject"/> to be a base class for full-audited entities.
+/// </summary>
 [Serializable]
-public abstract class FullAuditedAggregateRoot : AuditedAggregateRoot, IFullAuditedObject
+public abstract class FullAuditedEntity : AuditedEntity, IFullAuditedObject
 {
     /// <inheritdoc />
     public virtual Guid? DeleterId { get; set; }
@@ -14,19 +17,20 @@ public abstract class FullAuditedAggregateRoot : AuditedAggregateRoot, IFullAudi
 }
 
 /// <summary>
-/// Implements <see cref="IFullAuditedObject"/> to be a base class for full-audited aggregate roots.
+/// Implements <see cref="IFullAuditedObject"/> to be a base class for full-audited entities.
 /// </summary>
 /// <typeparam name="TKey">Type of the primary key of the entity</typeparam>
 [Serializable]
-public abstract class FullAuditedAggregateRoot<TKey> : AuditedAggregateRoot<TKey>, IFullAuditedObject
+public abstract class FullAuditedEntity<TKey> : AuditedEntity<TKey>, IFullAuditedObject
 {
-    protected FullAuditedAggregateRoot()
+    protected FullAuditedEntity()
     {
     }
 
-    protected FullAuditedAggregateRoot(TKey id)
-        : base(id)
-    { }
+    protected FullAuditedEntity(TKey id)
+            : base(id)
+    {
+    }
 
     /// <inheritdoc />
     public virtual Guid? DeleterId { get; set; }

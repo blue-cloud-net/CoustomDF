@@ -10,6 +10,7 @@ public interface IHasDeletion : ISoftDelete
     /// Id of the deleter user.
     /// </summary>
     Guid? DeleterId { get; }
+
     /// <summary>
     /// Deletion time.
     /// </summary>

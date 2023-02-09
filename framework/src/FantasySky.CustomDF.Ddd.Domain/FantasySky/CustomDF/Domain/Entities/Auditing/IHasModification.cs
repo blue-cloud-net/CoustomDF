@@ -6,11 +6,12 @@ namespace FantasySky.CustomDF.Domain.Entities.Auditing;
 public interface IHasModification
 {
     /// <summary>
-    /// Last modifier user for this entity.
-    /// </summary>
-    Guid? LastModifierId { get; }
-    /// <summary>
     /// The last modified time for this entity.
     /// </summary>
     DateTimeOffset? LastModificationTime { get; }
+
+    /// <summary>
+    /// Last modifier user for this entity.
+    /// </summary>
+    Guid? LastModifierId { get; }
 }

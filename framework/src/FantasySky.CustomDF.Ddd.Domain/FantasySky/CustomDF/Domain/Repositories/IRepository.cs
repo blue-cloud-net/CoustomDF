@@ -7,11 +7,9 @@ namespace FantasySky.CustomDF.Domain.Repositories;
 /// </summary>
 public interface IRepository
 {
-
 }
 
 public interface IRepository<TEntity> : IReadOnlyRepository<TEntity>, IBasicRepository<TEntity>
     where TEntity : class, IEntity
 {
-
 }

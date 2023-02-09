@@ -7,10 +7,10 @@ namespace FantasySky.CustomDF.Domain.Entities.Auditing;
 public abstract class AuditedEntity : CreationAuditedEntity, IAuditedObject
 {
     /// <inheritdoc />
-    public virtual Guid? LastModifierId { get; set; }
+    public virtual DateTimeOffset? LastModificationTime { get; set; }
 
     /// <inheritdoc />
-    public virtual DateTimeOffset? LastModificationTime { get; set; }
+    public virtual Guid? LastModifierId { get; set; }
 }
 
 /// <summary>
@@ -20,15 +20,16 @@ public abstract class AuditedEntity : CreationAuditedEntity, IAuditedObject
 [Serializable]
 public abstract class AuditedEntity<TKey> : CreationAuditedEntity<TKey>, IAuditedObject
 {
-    /// <inheritdoc />
-    public virtual Guid? LastModifierId { get; set; }
+    protected AuditedEntity()
+    { }
+
+    protected AuditedEntity(TKey id)
+            : base(id)
+    { }
 
     /// <inheritdoc />
     public virtual DateTimeOffset? LastModificationTime { get; set; }
 
-    protected AuditedEntity(TKey id)
-        : base(id)
-    {
-
-    }
+    /// <inheritdoc />
+    public virtual Guid? LastModifierId { get; set; }
 }

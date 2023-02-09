@@ -6,11 +6,12 @@ namespace FantasySky.CustomDF.Domain.Entities.Auditing;
 public interface IHasCreation
 {
     /// <summary>
-    /// Id of the creator.May have.
-    /// </summary>
-    Guid? CreatorId { get; }
-    /// <summary>
     /// Creation time.
     /// </summary>
     DateTimeOffset CreationTime { get; }
+
+    /// <summary>
+    /// Id of the creator.May have.
+    /// </summary>
+    Guid? CreatorId { get; }
 }

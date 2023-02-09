@@ -1,9 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace FantasySky.CustomDF.Domain.Entities;
 
 /// <inheritdoc/>
@@ -15,39 +9,37 @@ public abstract class Entity : IEntity
         EntityHelper.TrySetTenantId(this);
     }
 
-    /// <inheritdoc/>
-    public override string ToString()
+    public bool EntityEquals(IEntity other)
     {
-        return $"[Entity: {this.GetType().Name}] Keys = {this.GetKeys().JoinAsString(", ")}";
+        return EntityHelper.EntityEquals(this, other);
     }
 
     public abstract object[] GetKeys();
 
-    public bool EntityEquals(IEntity other)
+    /// <inheritdoc/>
+    public override string ToString()
     {
-        return EntityHelper.EntityEquals(this, other);
+        return $"[Entity: {this.GetType().Name}] Keys = {this.GetKeys().JoinAsString(", ")}";
     }
 }
 
 /// <inheritdoc cref="IEntity{TKey}" />
 
 [Serializable]
-public abstract class Entity<TKey> : Entity, IEntity<TKey>
+public abstract class Entity<TKey> : Entity, IEntity<TKey> where TKey : notnull
 {
-    /// <summary>
-    /// <inheritdoc/>
-    /// </summary>
-    public virtual TKey Id { get; protected set; }
-
-    //protected Entity()
-    //{
-
-    //}
+    protected Entity()
+    {
+        this.Id = default!;
+    }
 
     protected Entity(TKey id)
     {
         this.Id = id;
     }
+
+    /// <inheritdoc/>
+    public virtual TKey Id { get; protected set; }
 
     public override object[] GetKeys()
     {

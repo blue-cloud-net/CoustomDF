@@ -5,14 +5,4 @@ namespace FantasySky.CustomDF.Domain.Entities.Auditing;
 /// </summary>
 public interface IAuditedObject : ICreationAuditedObject, IModificationAuditedObject
 {
-
-}
-
-/// <summary>
-/// Extends <see cref="IAuditedObject"/> to add user navigation properties.
-/// </summary>
-/// <typeparam name="TUser">Type of the user</typeparam>
-public interface IAuditedObject<TUser> : IAuditedObject, ICreationAuditedObject<TUser>, IModificationAuditedObject<TUser>
-{
-
 }

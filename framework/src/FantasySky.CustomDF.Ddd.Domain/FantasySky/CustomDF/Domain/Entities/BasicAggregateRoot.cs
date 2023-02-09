@@ -12,14 +12,9 @@ public abstract class BasicAggregateRoot : Entity,
     private readonly ICollection<DomainEventRecord> _distributedEvents = new Collection<DomainEventRecord>();
     private readonly ICollection<DomainEventRecord> _localEvents = new Collection<DomainEventRecord>();
 
-    public virtual IEnumerable<DomainEventRecord> GetLocalEvents()
+    public virtual void ClearDistributedEvents()
     {
-        return _localEvents;
-    }
-
-    public virtual IEnumerable<DomainEventRecord> GetDistributedEvents()
-    {
-        return _distributedEvents;
+        _distributedEvents.Clear();
     }
 
     public virtual void ClearLocalEvents()
@@ -27,19 +22,24 @@ public abstract class BasicAggregateRoot : Entity,
         _localEvents.Clear();
     }
 
-    public virtual void ClearDistributedEvents()
+    public virtual IEnumerable<DomainEventRecord> GetDistributedEvents()
     {
-        _distributedEvents.Clear();
+        return _distributedEvents;
     }
 
-    protected virtual void AddLocalEvent(object eventData)
+    public virtual IEnumerable<DomainEventRecord> GetLocalEvents()
     {
-        _localEvents.Add(new DomainEventRecord(eventData, EventOrderGenerator.GetNext()));
+        return _localEvents;
     }
 
     protected virtual void AddDistributedEvent(object eventData)
     {
         _distributedEvents.Add(new DomainEventRecord(eventData, EventOrderGenerator.GetNext()));
+    }
+
+    protected virtual void AddLocalEvent(object eventData)
+    {
+        _localEvents.Add(new DomainEventRecord(eventData, EventOrderGenerator.GetNext()));
     }
 }
 
@@ -51,20 +51,16 @@ public abstract class BasicAggregateRoot<TKey> : Entity<TKey>,
     private readonly ICollection<DomainEventRecord> _distributedEvents = new Collection<DomainEventRecord>();
     private readonly ICollection<DomainEventRecord> _localEvents = new Collection<DomainEventRecord>();
 
+    protected BasicAggregateRoot()
+    { }
+
     protected BasicAggregateRoot(TKey id)
         : base(id)
-    {
+    { }
 
-    }
-
-    public virtual IEnumerable<DomainEventRecord> GetLocalEvents()
+    public virtual void ClearDistributedEvents()
     {
-        return _localEvents;
-    }
-
-    public virtual IEnumerable<DomainEventRecord> GetDistributedEvents()
-    {
-        return _distributedEvents;
+        _distributedEvents.Clear();
     }
 
     public virtual void ClearLocalEvents()
@@ -72,18 +68,23 @@ public abstract class BasicAggregateRoot<TKey> : Entity<TKey>,
         _localEvents.Clear();
     }
 
-    public virtual void ClearDistributedEvents()
+    public virtual IEnumerable<DomainEventRecord> GetDistributedEvents()
     {
-        _distributedEvents.Clear();
+        return _distributedEvents;
     }
 
-    protected virtual void AddLocalEvent(object eventData)
+    public virtual IEnumerable<DomainEventRecord> GetLocalEvents()
     {
-        _localEvents.Add(new DomainEventRecord(eventData, EventOrderGenerator.GetNext()));
+        return _localEvents;
     }
 
     protected virtual void AddDistributedEvent(object eventData)
     {
         _distributedEvents.Add(new DomainEventRecord(eventData, EventOrderGenerator.GetNext()));
+    }
+
+    protected virtual void AddLocalEvent(object eventData)
+    {
+        _localEvents.Add(new DomainEventRecord(eventData, EventOrderGenerator.GetNext()));
     }
 }

@@ -6,17 +6,17 @@ public interface IReadOnlyBasicRepository<TEntity> : IRepository
     where TEntity : class, IEntity
 {
     /// <summary>
+    /// Gets total count of all entities.
+    /// </summary>
+    Task<long> GetCountAsync(CancellationToken cancellationToken = default);
+
+    /// <summary>
     /// Gets a list of all the entities.
     /// </summary>
     /// <param name="includeDetails">Set true to include all children of this entity</param>
     /// <param name="cancellationToken">A <see cref="T:System.Threading.CancellationToken" /> to observe while waiting for the task to complete.</param>
     /// <returns>Entity</returns>
     Task<List<TEntity>> GetListAsync(bool includeDetails = false, CancellationToken cancellationToken = default);
-
-    /// <summary>
-    /// Gets total count of all entities.
-    /// </summary>
-    Task<long> GetCountAsync(CancellationToken cancellationToken = default);
 
     Task<List<TEntity>> GetPagedListAsync(
         int skipCount,
@@ -38,8 +38,6 @@ public interface IReadOnlyBasicRepository<TEntity, TKey> : IReadOnlyBasicReposit
     /// <param name="cancellationToken">A <see cref="T:System.Threading.CancellationToken" /> to observe while waiting for the task to complete.</param>
     /// <returns>Entity</returns>
 
-    Task<TEntity> GetAsync(TKey id, bool includeDetails = true, CancellationToken cancellationToken = default);
-
     /// <summary>
     /// Gets an entity with given primary key or null if not found.
     /// </summary>
@@ -48,4 +46,6 @@ public interface IReadOnlyBasicRepository<TEntity, TKey> : IReadOnlyBasicReposit
     /// <param name="cancellationToken">A <see cref="T:System.Threading.CancellationToken" /> to observe while waiting for the task to complete.</param>
     /// <returns>Entity or null</returns>
     Task<TEntity?> FindAsync(TKey id, bool includeDetails = true, CancellationToken cancellationToken = default);
+
+    Task<TEntity> GetAsync(TKey id, bool includeDetails = true, CancellationToken cancellationToken = default);
 }

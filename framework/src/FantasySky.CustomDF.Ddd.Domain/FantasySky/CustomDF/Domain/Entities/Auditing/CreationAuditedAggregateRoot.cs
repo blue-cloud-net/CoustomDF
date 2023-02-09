@@ -7,10 +7,10 @@ namespace FantasySky.CustomDF.Domain.Entities.Auditing;
 public abstract class CreationAuditedAggregateRoot : AggregateRoot, ICreationAuditedObject
 {
     /// <inheritdoc />
-    public virtual Guid? CreatorId { get; protected set; }
+    public virtual DateTimeOffset CreationTime { get; protected set; }
 
     /// <inheritdoc />
-    public virtual DateTimeOffset CreationTime { get; protected set; }
+    public virtual Guid? CreatorId { get; protected set; }
 }
 
 /// <summary>
@@ -20,15 +20,17 @@ public abstract class CreationAuditedAggregateRoot : AggregateRoot, ICreationAud
 [Serializable]
 public abstract class CreationAuditedAggregateRoot<TKey> : AggregateRoot<TKey>, ICreationAuditedObject
 {
-    /// <inheritdoc />
-    public virtual Guid? CreatorId { get; set; }
+    protected CreationAuditedAggregateRoot()
+            : base()
+    { }
+
+    protected CreationAuditedAggregateRoot(TKey id)
+            : base(id)
+    { }
 
     /// <inheritdoc />
     public virtual DateTimeOffset CreationTime { get; set; }
 
-    protected CreationAuditedAggregateRoot(TKey id)
-        : base(id)
-    {
-
-    }
+    /// <inheritdoc />
+    public virtual Guid? CreatorId { get; set; }
 }
