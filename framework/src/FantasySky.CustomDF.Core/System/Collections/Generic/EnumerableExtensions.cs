@@ -1,6 +1,8 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace System.Collections.Generic;
 
-/// <summary> 
+/// <summary>
 /// Extension methods for <see cref="IEnumerable{T}"/>.
 /// </summary>
 public static class EnumerableExtensions
@@ -28,5 +30,13 @@ public static class EnumerableExtensions
     public static string JoinAsString<T>(this IEnumerable<T> source, string separator)
     {
         return String.Join(separator, source);
+    }
+
+    /// <summary>
+    /// Checks whatever given collection object is null or has no item.
+    /// </summary>
+    public static bool IsNullOrEmpty<T>([NotNullWhen(false)] this IEnumerable<T>? source)
+    {
+        return source == null || source.Count() <= 0;
     }
 }

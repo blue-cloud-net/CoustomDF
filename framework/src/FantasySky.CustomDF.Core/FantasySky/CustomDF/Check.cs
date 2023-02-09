@@ -9,8 +9,26 @@ namespace FantasySky.CustomDF;
 [DebuggerStepThrough]
 public static class Check
 {
-    public static T IsNotNull<T>(
+    public static T IsNotDefaultOrNull<T>(
         [NotNull] T? value,
+        string parameterName)
+        where T : struct
+    {
+        if (value == null)
+        {
+            throw new ArgumentException($"{parameterName} is null!", parameterName);
+        }
+
+        if (value.Value.Equals(default(T)))
+        {
+            throw new ArgumentException($"{parameterName} has a default value!", parameterName);
+        }
+
+        return value.Value;
+    }
+
+    public static T IsNotNull<T>(
+            [NotNull] T? value,
         string parameterName)
     {
         if (value == null)
@@ -34,23 +52,11 @@ public static class Check
         return value;
     }
 
-    public static string IsNotNullOrWhiteSpace(
-        [NotNull] string? value,
-        string parameterName)
-    {
-        if (value is null || value.IsNullOrWhiteSpace())
-        {
-            throw new ArgumentException($"{parameterName} can not be null, empty or white space!", parameterName);
-        }
-
-        return value;
-    }
-
     public static string IsNotNullOrEmpty(
         [NotNull] string? value,
         string parameterName)
     {
-        if (value is null || value.IsNullOrEmpty())
+        if (value.IsNullOrEmpty())
         {
             throw new ArgumentException($"{parameterName} can not be null or empty!", parameterName);
         }
@@ -62,7 +68,7 @@ public static class Check
         [NotNull] ICollection<T>? value,
         string parameterName)
     {
-        if (value is null || value.IsNullOrEmpty())
+        if (value.IsNullOrEmpty())
         {
             throw new ArgumentException(parameterName + " can not be null or empty!", parameterName);
         }
@@ -70,21 +76,27 @@ public static class Check
         return value;
     }
 
-    public static T IsNotDefaultOrNull<T>(
-        [NotNull] T? value,
+    public static IEnumerable<T> IsNotNullOrEmpty<T>(
+        [NotNull] IEnumerable<T>? value,
         string parameterName)
-        where T : struct
     {
-        if (value == null)
+        if (value.IsNullOrEmpty())
         {
-            throw new ArgumentException($"{parameterName} is null!", parameterName);
+            throw new ArgumentException(parameterName + " can not be null or empty!", parameterName);
         }
 
-        if (value.Value.Equals(default(T)))
+        return value;
+    }
+
+    public static string IsNotNullOrWhiteSpace(
+                [NotNull] string? value,
+        string parameterName)
+    {
+        if (value.IsNullOrWhiteSpace())
         {
-            throw new ArgumentException($"{parameterName} has a default value!", parameterName);
+            throw new ArgumentException($"{parameterName} can not be null, empty or white space!", parameterName);
         }
 
-        return value.Value;
+        return value;
     }
 }
