@@ -2,17 +2,30 @@ namespace FantasySky.CustomDF.Caching.StackExchangeRedis;
 
 internal class RedisConnectionMultiplexerFactory : IRedisConnectionMultiplexerFactory, IDisposable
 {
-    private bool _disposed = false;
-
     private readonly SemaphoreSlim _connectionLock = new(initialCount: 1, maxCount: 1);
-
     private readonly IDictionary<string, ConnectionMultiplexer> _connections = new Dictionary<string, ConnectionMultiplexer>(5);
     private readonly ILogger<RedisConnectionMultiplexerFactory> _logger;
+    private bool _disposed = false;
 
     public RedisConnectionMultiplexerFactory(
         ILogger<RedisConnectionMultiplexerFactory> logger)
     {
         _logger = logger;
+    }
+
+    public void Dispose()
+    {
+        if (_disposed)
+        {
+            return;
+        }
+
+        _disposed = true;
+
+        foreach (var (_, connection) in _connections)
+        {
+            connection?.Close();
+        }
     }
 
     public ConnectionMultiplexer GetConnection(string? connectionString)
@@ -102,21 +115,6 @@ internal class RedisConnectionMultiplexerFactory : IRedisConnectionMultiplexerFa
         if (_disposed)
         {
             throw new ObjectDisposedException(this.GetType().FullName);
-        }
-    }
-
-    public void Dispose()
-    {
-        if (_disposed)
-        {
-            return;
-        }
-
-        _disposed = true;
-
-        foreach (var (_, connection) in _connections)
-        {
-            connection?.Close();
         }
     }
 }

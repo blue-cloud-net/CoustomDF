@@ -5,7 +5,7 @@ public interface IDistributedLock
     /// <summary>
     /// Tries to acquire a named lock.
     /// Returns a disposable object to release the lock.
-    /// It is suggested to use this method within a using block. 
+    /// It is suggested to use this method within a using block.
     /// Returns null if the lock could not be handled.
     /// </summary>
     /// <param name="key">The key name of the lock</param>

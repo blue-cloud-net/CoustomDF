@@ -1,4 +1,4 @@
-﻿namespace FantasySky.CustomDF.Caching.StackExchangeRedis;
+namespace FantasySky.CustomDF.Caching.StackExchangeRedis;
 
 public class RedisCacheOptions
 {

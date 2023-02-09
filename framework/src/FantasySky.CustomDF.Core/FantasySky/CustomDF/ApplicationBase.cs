@@ -10,18 +10,6 @@ namespace FantasySky.CustomDF;
 
 public abstract class ApplicationBase : IApplication
 {
-    public Type StartupType { get; }
-
-    public IServiceProvider? ServiceProvider { get; private set; }
-
-    public IServiceCollection Services { get; }
-
-    public IConfiguration Configuration { get; }
-
-    public string? ApplicationName { get; }
-
-    public string InstanceId { get; } = Guid.NewGuid().ToString();
-
     private bool _configuredServices;
 
     internal ApplicationBase(
@@ -54,6 +42,13 @@ public abstract class ApplicationBase : IApplication
         }
     }
 
+    public string? ApplicationName { get; }
+    public IConfiguration Configuration { get; }
+    public string InstanceId { get; } = Guid.NewGuid().ToString();
+    public IServiceProvider? ServiceProvider { get; private set; }
+    public IServiceCollection Services { get; }
+    public Type StartupType { get; }
+
     public virtual void ConfigureServices()
     {
         this.CheckMultipleConfigureServices();
@@ -68,12 +63,12 @@ public abstract class ApplicationBase : IApplication
         //TODO: Shutdown if not done before?
     }
 
-    public Task ShutdownAsync()
+    public void Shutdown()
     {
         throw new NotImplementedException();
     }
 
-    public void Shutdown()
+    public Task ShutdownAsync()
     {
         throw new NotImplementedException();
     }

@@ -1,8 +1,17 @@
 using Microsoft.Extensions.DependencyInjection;
 
 namespace FantasySky.CustomDF;
+
 public class ApplicationCreationOptions
 {
+    public ApplicationCreationOptions(IServiceCollection services)
+    {
+        this.Services = Check.IsNotNull(services, nameof(services));
+
+        //this.Configuration = new ConfigurationBuilderOptions();
+    }
+
+    public string? ApplicationName { get; set; }
     public IServiceCollection Services { get; }
 
     /// <summary>
@@ -12,13 +21,4 @@ public class ApplicationCreationOptions
     //public ConfigurationBuilderOptions Configuration { get; }
 
     public bool SkipConfigureServices { get; set; }
-
-    public string? ApplicationName { get; set; }
-
-    public ApplicationCreationOptions(IServiceCollection services)
-    {
-        this.Services = Check.IsNotNull(services, nameof(services));
-
-        //this.Configuration = new ConfigurationBuilderOptions();
-    }
 }

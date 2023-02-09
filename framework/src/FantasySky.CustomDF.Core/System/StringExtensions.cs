@@ -12,9 +12,28 @@ namespace System;
 public static class StringExtensions
 {
     /// <summary>
+    /// Converts given string to a byte array using <see cref="Encoding.UTF8"/> encoding.
+    /// </summary>
+    public static byte[] GetBytes(this string str)
+    {
+        return str.GetBytes(Encoding.UTF8);
+    }
+
+    /// <summary>
+    /// Converts given string to a byte array using the given <paramref name="encoding"/>
+    /// </summary>
+    public static byte[] GetBytes([NotNull] this string str, [NotNull] Encoding encoding)
+    {
+        Check.IsNotNull(str, nameof(str));
+        Check.IsNotNull(encoding, nameof(encoding));
+
+        return encoding.GetBytes(str);
+    }
+
+    /// <summary>
     /// Indicates whether this string is null or an System.String.Empty string.
     /// </summary>
-    public static bool IsNullOrEmpty(this string str)
+    public static bool IsNullOrEmpty([NotNullWhen(false)] this string? str)
     {
         return String.IsNullOrEmpty(str);
     }
@@ -22,7 +41,7 @@ public static class StringExtensions
     /// <summary>
     /// indicates whether this string is null, empty, or consists only of white-space characters.
     /// </summary>
-    public static bool IsNullOrWhiteSpace(this string str)
+    public static bool IsNullOrWhiteSpace([NotNullWhen(false)]this string? str)
     {
         return String.IsNullOrWhiteSpace(str);
     }
@@ -114,24 +133,5 @@ public static class StringExtensions
         }
 
         return sb.ToString();
-    }
-
-    /// <summary>
-    /// Converts given string to a byte array using <see cref="Encoding.UTF8"/> encoding.
-    /// </summary>
-    public static byte[] GetBytes(this string str)
-    {
-        return str.GetBytes(Encoding.UTF8);
-    }
-
-    /// <summary>
-    /// Converts given string to a byte array using the given <paramref name="encoding"/>
-    /// </summary>
-    public static byte[] GetBytes([NotNull] this string str, [NotNull] Encoding encoding)
-    {
-        Check.IsNotNull(str, nameof(str));
-        Check.IsNotNull(encoding, nameof(encoding));
-
-        return encoding.GetBytes(str);
     }
 }

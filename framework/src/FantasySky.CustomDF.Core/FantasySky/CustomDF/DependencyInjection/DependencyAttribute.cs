@@ -4,16 +4,9 @@ namespace FantasySky.CustomDF.DependencyInjection;
 
 public class DependencyAttribute : Attribute
 {
-    public virtual ServiceLifetime Lifetime { get; set; }
-    public virtual Type? InterfaceType { get; set; }
-
-    public virtual bool TryRegister { get; set; }
-
-    public virtual bool ReplaceServices { get; set; }
-
     public DependencyAttribute()
     {
-        this.Lifetime= ServiceLifetime.Scoped;
+        this.Lifetime = ServiceLifetime.Scoped;
     }
 
     public DependencyAttribute(ServiceLifetime lifetime)
@@ -26,4 +19,9 @@ public class DependencyAttribute : Attribute
         this.InterfaceType = interfaceType;
         this.Lifetime = lifetime;
     }
+
+    public virtual Type? InterfaceType { get; set; }
+    public virtual ServiceLifetime Lifetime { get; set; }
+    public virtual bool ReplaceServices { get; set; }
+    public virtual bool TryRegister { get; set; }
 }

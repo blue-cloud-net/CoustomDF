@@ -18,5 +18,4 @@ public static class HostEnvironmentEnvExtensions
     //     otherwise false.
     public static bool IsTest(this IHostEnvironment hostEnvironment)
         => hostEnvironment.IsEnvironment("Test");
-
 }

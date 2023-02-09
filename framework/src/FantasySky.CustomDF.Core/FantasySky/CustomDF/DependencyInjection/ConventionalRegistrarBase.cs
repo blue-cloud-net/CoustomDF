@@ -23,6 +23,8 @@ public abstract class ConventionalRegistrarBase : IConventionalRegistrar
         this.AddTypes(services, types);
     }
 
+    public abstract void AddType(IServiceCollection services, Type type);
+
     public virtual void AddTypes(IServiceCollection services, params Type[] types)
     {
         foreach (var type in types)
@@ -31,7 +33,35 @@ public abstract class ConventionalRegistrarBase : IConventionalRegistrar
         }
     }
 
-    public abstract void AddType(IServiceCollection services, Type type);
+    protected virtual ServiceDescriptor CreateServiceDescriptor(
+        Type implementationType,
+        Type serviceType,
+        Type? redirectedType,
+        ServiceLifetime lifeTime)
+    {
+        if (lifeTime is ServiceLifetime.Singleton or ServiceLifetime.Scoped)
+        {
+            if (redirectedType != null)
+            {
+                return ServiceDescriptor.Describe(
+                    serviceType,
+                    provider => provider.GetService(redirectedType),
+                    lifeTime
+                );
+            }
+        }
+
+        return ServiceDescriptor.Describe(
+            serviceType,
+            implementationType,
+            lifeTime
+        );
+    }
+
+    protected virtual ServiceLifetime? GetDefaultLifeTimeOrNull(Type type)
+    {
+        return null;
+    }
 
     protected virtual IEnumerable<DependencyAttribute> GetDependencyAttributeOrEmpty(Type type)
     {
@@ -61,35 +91,5 @@ public abstract class ConventionalRegistrarBase : IConventionalRegistrar
         }
 
         return null;
-    }
-
-    protected virtual ServiceLifetime? GetDefaultLifeTimeOrNull(Type type)
-    {
-        return null;
-    }
-
-    protected virtual ServiceDescriptor CreateServiceDescriptor(
-        Type implementationType,
-        Type serviceType,
-        Type? redirectedType,
-        ServiceLifetime lifeTime)
-    {
-        if (lifeTime is ServiceLifetime.Singleton or ServiceLifetime.Scoped)
-        {
-            if (redirectedType != null)
-            {
-                return ServiceDescriptor.Describe(
-                    serviceType,
-                    provider => provider.GetService(redirectedType),
-                    lifeTime
-                );
-            }
-        }
-
-        return ServiceDescriptor.Describe(
-            serviceType,
-            implementationType,
-            lifeTime
-        );
     }
 }

@@ -12,7 +12,7 @@ public static class TypeHelper
         return null;
     }
 
-    public static bool IsDefaultValue( object obj)
+    public static bool IsDefaultValue(object obj)
     {
         if (obj == null)
         {

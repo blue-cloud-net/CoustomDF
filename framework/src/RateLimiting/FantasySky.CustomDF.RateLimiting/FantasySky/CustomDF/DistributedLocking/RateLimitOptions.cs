@@ -5,5 +5,4 @@ public class RateLimitOptions
     public RateLimitOptions()
     {
     }
-
 }

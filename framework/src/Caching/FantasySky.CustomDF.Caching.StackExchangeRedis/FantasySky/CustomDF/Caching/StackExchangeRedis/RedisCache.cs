@@ -8,16 +8,24 @@ using Microsoft.Extensions.Options;
 namespace FantasySky.CustomDF.Caching.StackExchangeRedis;
 
 /// <summary>
-/// 
+///
 /// </summary>
 public class RedisCache : IDistributedCache, ICacheSupportsMultipleItems, ICacheSupportsSortSet
 {
+    private const string AbsoluteExpirationKey = "absexp";
+
+    private const string DataKey = "data";
+
     private const string HashSetScript = @"
                 redis.call('HSET', KEYS[1], 'absexp', ARGV[1], 'sldexp', ARGV[2], 'data', ARGV[4])
                 if ARGV[3] ~= '-1' then
                     redis.call('EXPIRE', KEYS[1], ARGV[3])
                 end
                 return 1";
+
+    private const long NotPresent = -1;
+
+    private const string SlidingExpirationKey = "sldexp";
 
     private const string SortedSetAddScript = @"
                 redis.call('ZADD', KEYS[1], ARGV[2], ARGV[3])
@@ -26,18 +34,12 @@ public class RedisCache : IDistributedCache, ICacheSupportsMultipleItems, ICache
                 end
                 return 1";
 
-    private volatile IConnectionMultiplexer? _connection;
-    private IDatabase? _cache;
-
     private readonly IRedisConnectionMultiplexerFactory _connectionFactory;
-    private readonly RedisCacheOptions _options;
     private readonly string _instanceName;
     private readonly ILogger _logger;
-
-    private const string AbsoluteExpirationKey = "absexp";
-    private const string SlidingExpirationKey = "sldexp";
-    private const string DataKey = "data";
-    private const long NotPresent = -1;
+    private readonly RedisCacheOptions _options;
+    private IDatabase? _cache;
+    private volatile IConnectionMultiplexer? _connection;
 
     /// <summary>
     /// Initializes a new instance of <see cref="RedisCache"/>.
@@ -82,27 +84,6 @@ public class RedisCache : IDistributedCache, ICacheSupportsMultipleItems, ICache
         return await this.GetAndRefreshManyAsync(keys, true, token);
     }
 
-    public void SetMany(
-        IEnumerable<KeyValuePair<string, byte[]>> items,
-        DistributedCacheEntryOptions options)
-    {
-        this.Connect();
-
-        Task.WaitAll(this.PipelineSetMany(items, options));
-    }
-
-    public async Task SetManyAsync(
-        IEnumerable<KeyValuePair<string, byte[]>> items,
-        DistributedCacheEntryOptions options,
-        CancellationToken token = default)
-    {
-        token.ThrowIfCancellationRequested();
-
-        await this.ConnectAsync(token);
-
-        await Task.WhenAll(this.PipelineSetMany(items, options));
-    }
-
     public void RefreshMany(
         IEnumerable<string> keys)
     {
@@ -137,6 +118,27 @@ public class RedisCache : IDistributedCache, ICacheSupportsMultipleItems, ICache
         await this.ConnectAsync(token);
 
         await _cache.KeyDeleteAsync(keys.Select(key => MakeRedisKey(_instanceName, key)).ToArray());
+    }
+
+    public void SetMany(
+                        IEnumerable<KeyValuePair<string, byte[]>> items,
+        DistributedCacheEntryOptions options)
+    {
+        this.Connect();
+
+        Task.WaitAll(this.PipelineSetMany(items, options));
+    }
+
+    public async Task SetManyAsync(
+        IEnumerable<KeyValuePair<string, byte[]>> items,
+        DistributedCacheEntryOptions options,
+        CancellationToken token = default)
+    {
+        token.ThrowIfCancellationRequested();
+
+        await this.ConnectAsync(token);
+
+        await Task.WhenAll(this.PipelineSetMany(items, options));
     }
 
     protected virtual byte[][] GetAndRefreshMany(
@@ -264,7 +266,7 @@ public class RedisCache : IDistributedCache, ICacheSupportsMultipleItems, ICache
         return tasks;
     }
 
-    #endregion
+    #endregion HashMany
 
     #region HashSingle
 
@@ -288,58 +290,6 @@ public class RedisCache : IDistributedCache, ICacheSupportsMultipleItems, ICache
         token.ThrowIfCancellationRequested();
 
         return await this.GetAndRefreshAsync(key, getData: true, token: token).ConfigureAwait(false);
-    }
-
-    public void Set(string key, byte[] value, DistributedCacheEntryOptions options)
-    {
-        if (String.IsNullOrWhiteSpace(key))
-        {
-            throw new ArgumentNullException(nameof(key));
-        }
-
-        if (value == null)
-        {
-            throw new ArgumentNullException(nameof(value));
-        }
-
-        if (options == null)
-        {
-            throw new ArgumentNullException(nameof(options));
-        }
-
-        this.Connect();
-
-        var redisKey = MakeRedisKey(_instanceName, key);
-        var redisValues = MakeRedisHashSetArgs(value, options);
-
-        _cache.ScriptEvaluate(HashSetScript, new RedisKey[] { redisKey }, redisValues);
-    }
-
-    public async Task SetAsync(string key, byte[] value, DistributedCacheEntryOptions options, CancellationToken token = default)
-    {
-        if (key == null)
-        {
-            throw new ArgumentNullException(nameof(key));
-        }
-
-        if (value == null)
-        {
-            throw new ArgumentNullException(nameof(value));
-        }
-
-        if (options == null)
-        {
-            throw new ArgumentNullException(nameof(options));
-        }
-
-        token.ThrowIfCancellationRequested();
-
-        await this.ConnectAsync(token).ConfigureAwait(false);
-
-        var redisKey = MakeRedisKey(_instanceName, key);
-        var redisValues = MakeRedisHashSetArgs(value, options);
-
-        await _cache.ScriptEvaluateAsync(HashSetScript, new RedisKey[] { redisKey }, redisValues).ConfigureAwait(false);
     }
 
     public void Refresh(string key)
@@ -398,6 +348,58 @@ public class RedisCache : IDistributedCache, ICacheSupportsMultipleItems, ICache
         {
             _logger.LogWarning("The redis key {RedisKey} delete failed.", redisKey);
         }
+    }
+
+    public void Set(string key, byte[] value, DistributedCacheEntryOptions options)
+    {
+        if (String.IsNullOrWhiteSpace(key))
+        {
+            throw new ArgumentNullException(nameof(key));
+        }
+
+        if (value == null)
+        {
+            throw new ArgumentNullException(nameof(value));
+        }
+
+        if (options == null)
+        {
+            throw new ArgumentNullException(nameof(options));
+        }
+
+        this.Connect();
+
+        var redisKey = MakeRedisKey(_instanceName, key);
+        var redisValues = MakeRedisHashSetArgs(value, options);
+
+        _cache.ScriptEvaluate(HashSetScript, new RedisKey[] { redisKey }, redisValues);
+    }
+
+    public async Task SetAsync(string key, byte[] value, DistributedCacheEntryOptions options, CancellationToken token = default)
+    {
+        if (key == null)
+        {
+            throw new ArgumentNullException(nameof(key));
+        }
+
+        if (value == null)
+        {
+            throw new ArgumentNullException(nameof(value));
+        }
+
+        if (options == null)
+        {
+            throw new ArgumentNullException(nameof(options));
+        }
+
+        token.ThrowIfCancellationRequested();
+
+        await this.ConnectAsync(token).ConfigureAwait(false);
+
+        var redisKey = MakeRedisKey(_instanceName, key);
+        var redisValues = MakeRedisHashSetArgs(value, options);
+
+        await _cache.ScriptEvaluateAsync(HashSetScript, new RedisKey[] { redisKey }, redisValues).ConfigureAwait(false);
     }
 
     private byte[]? GetAndRefresh(string key, bool getData)
@@ -475,6 +477,7 @@ public class RedisCache : IDistributedCache, ICacheSupportsMultipleItems, ICache
 
         return null;
     }
+
     private void Refresh(IDatabase cache, string key, DateTimeOffset? absExpr, TimeSpan? sldExpr)
     {
         if (key == null)
@@ -536,7 +539,7 @@ public class RedisCache : IDistributedCache, ICacheSupportsMultipleItems, ICache
         }
     }
 
-    #endregion
+    #endregion HashSingle
 
     #region SortSet
 
@@ -609,7 +612,8 @@ public class RedisCache : IDistributedCache, ICacheSupportsMultipleItems, ICache
 
         return _cache.SortedSetLength(redisKey, minOrder ?? Double.NegativeInfinity, maxOrder ?? Double.PositiveInfinity);
     }
-    #endregion
+
+    #endregion SortSet
 
     #region Connect
 
@@ -649,14 +653,9 @@ public class RedisCache : IDistributedCache, ICacheSupportsMultipleItems, ICache
         _cache = _connection.GetDatabase();
     }
 
-    #endregion
+    #endregion Connect
 
     #region Expiration
-
-    protected static RedisKey MakeRedisKey(string instanceName, string key)
-    {
-        return instanceName + key;
-    }
 
     protected static RedisValue[] MakeRedisHashSetArgs(byte[] value, DistributedCacheEntryOptions options)
     {
@@ -673,6 +672,12 @@ public class RedisCache : IDistributedCache, ICacheSupportsMultipleItems, ICache
 
         return values;
     }
+
+    protected static RedisKey MakeRedisKey(string instanceName, string key)
+    {
+        return instanceName + key;
+    }
+
     protected static RedisValue[] MakeRedisSortedSetAddArgs(double scoren, byte[] value, DistributedCacheEntryOptions options)
     {
         if (options.SlidingExpiration.HasValue)
@@ -711,6 +716,24 @@ public class RedisCache : IDistributedCache, ICacheSupportsMultipleItems, ICache
         }
     }
 
+    private static DateTimeOffset? GetAbsoluteExpiration(DateTimeOffset creationTime, DistributedCacheEntryOptions options)
+    {
+        if (options.AbsoluteExpiration.HasValue && options.AbsoluteExpiration <= creationTime)
+        {
+            throw new ArgumentOutOfRangeException(
+                nameof(DistributedCacheEntryOptions.AbsoluteExpiration),
+                options.AbsoluteExpiration.Value,
+                "The absolute expiration value must be in the future.");
+        }
+
+        if (options.AbsoluteExpirationRelativeToNow.HasValue)
+        {
+            return creationTime + options.AbsoluteExpirationRelativeToNow;
+        }
+
+        return options.AbsoluteExpiration;
+    }
+
     private static long? GetExpirationInSeconds(DateTimeOffset creationTime, DateTimeOffset? absoluteExpiration, DistributedCacheEntryOptions options)
     {
         if (absoluteExpiration.HasValue && options.SlidingExpiration.HasValue)
@@ -731,22 +754,5 @@ public class RedisCache : IDistributedCache, ICacheSupportsMultipleItems, ICache
         return null;
     }
 
-    private static DateTimeOffset? GetAbsoluteExpiration(DateTimeOffset creationTime, DistributedCacheEntryOptions options)
-    {
-        if (options.AbsoluteExpiration.HasValue && options.AbsoluteExpiration <= creationTime)
-        {
-            throw new ArgumentOutOfRangeException(
-                nameof(DistributedCacheEntryOptions.AbsoluteExpiration),
-                options.AbsoluteExpiration.Value,
-                "The absolute expiration value must be in the future.");
-        }
-
-        if (options.AbsoluteExpirationRelativeToNow.HasValue)
-        {
-            return creationTime + options.AbsoluteExpirationRelativeToNow;
-        }
-
-        return options.AbsoluteExpiration;
-    }
-    #endregion
+    #endregion Expiration
 }

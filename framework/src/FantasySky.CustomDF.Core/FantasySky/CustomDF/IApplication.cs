@@ -7,9 +7,10 @@ public interface IApplication :
     IDisposable
 {
     /// <summary>
-    /// Type of the startup (entrance) module of the application.
+    /// Reference to the root service provider used by the application.
+    /// This can not be used before initialize the application.
     /// </summary>
-    Type StartupType { get; }
+    IServiceProvider? ServiceProvider { get; }
 
     /// <summary>
     /// List of services registered to this application.
@@ -18,18 +19,17 @@ public interface IApplication :
     IServiceCollection Services { get; }
 
     /// <summary>
-    /// Reference to the root service provider used by the application.
-    /// This can not be used before initialize the application.
+    /// Type of the startup (entrance) module of the application.
     /// </summary>
-    IServiceProvider? ServiceProvider { get; }
-
-    /// <summary>
-    /// Used to gracefully shutdown the application and all modules.
-    /// </summary>
-    Task ShutdownAsync();
+    Type StartupType { get; }
 
     /// <summary>
     /// Used to gracefully shutdown the application and all modules.
     /// </summary>
     void Shutdown();
+
+    /// <summary>
+    /// Used to gracefully shutdown the application and all modules.
+    /// </summary>
+    Task ShutdownAsync();
 }

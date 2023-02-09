@@ -13,17 +13,6 @@ public interface ICacheSupportsMultipleItems
         CancellationToken token = default
     );
 
-    void SetMany(
-        IEnumerable<KeyValuePair<string, byte[]>> items,
-        DistributedCacheEntryOptions options
-    );
-
-    Task SetManyAsync(
-        IEnumerable<KeyValuePair<string, byte[]>> items,
-        DistributedCacheEntryOptions options,
-        CancellationToken token = default
-    );
-
     void RefreshMany(
         IEnumerable<string> keys
     );
@@ -39,6 +28,17 @@ public interface ICacheSupportsMultipleItems
 
     Task RemoveManyAsync(
         IEnumerable<string> keys,
+        CancellationToken token = default
+    );
+
+    void SetMany(
+                        IEnumerable<KeyValuePair<string, byte[]>> items,
+        DistributedCacheEntryOptions options
+    );
+
+    Task SetManyAsync(
+        IEnumerable<KeyValuePair<string, byte[]>> items,
+        DistributedCacheEntryOptions options,
         CancellationToken token = default
     );
 }

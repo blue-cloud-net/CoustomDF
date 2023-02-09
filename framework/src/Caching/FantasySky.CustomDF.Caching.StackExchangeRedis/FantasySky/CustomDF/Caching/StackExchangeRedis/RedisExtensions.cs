@@ -1,21 +1,7 @@
-﻿namespace FantasySky.CustomDF.Caching.StackExchangeRedis;
+namespace FantasySky.CustomDF.Caching.StackExchangeRedis;
 
 internal static class RedisExtensions
 {
-    internal static RedisValue[] HashMemberGet(this IDatabase cache, RedisKey key, params string[] members)
-    {
-        // TODO: Error checking?
-        return cache.HashGet(key, GetRedisMembers(members));
-    }
-
-    internal static async Task<RedisValue[]> HashMemberGetAsync(
-        this IDatabase cache,
-        RedisKey key,
-        params string[] members)
-    {
-        // TODO: Error checking?
-        return await cache.HashGetAsync(key, GetRedisMembers(members)).ConfigureAwait(false);
-    }
     public static RedisValue[][] HashMemberGetMany(
         this IDatabase cache,
         RedisKey[] keys,
@@ -52,6 +38,21 @@ internal static class RedisExtensions
         }
 
         return await Task.WhenAll(tasks);
+    }
+
+    internal static RedisValue[] HashMemberGet(this IDatabase cache, RedisKey key, params string[] members)
+    {
+        // TODO: Error checking?
+        return cache.HashGet(key, GetRedisMembers(members));
+    }
+
+    internal static async Task<RedisValue[]> HashMemberGetAsync(
+        this IDatabase cache,
+        RedisKey key,
+        params string[] members)
+    {
+        // TODO: Error checking?
+        return await cache.HashGetAsync(key, GetRedisMembers(members)).ConfigureAwait(false);
     }
 
     private static RedisValue[] GetRedisMembers(params string[] members)
