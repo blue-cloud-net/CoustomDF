@@ -6,6 +6,7 @@
 	  <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="7.0.0" />
 	  <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
 	  <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.0" />
+	  <PackageReference Include="System.Linq.Dynamic.Core" Version="1.2.18" />
 	</ItemGroup>
 
 </Project>
