@@ -32,7 +32,7 @@ public interface ICacheSupportsMultipleItems
     );
 
     void SetMany(
-                        IEnumerable<KeyValuePair<string, byte[]>> items,
+        IEnumerable<KeyValuePair<string, byte[]>> items,
         DistributedCacheEntryOptions options
     );
 
