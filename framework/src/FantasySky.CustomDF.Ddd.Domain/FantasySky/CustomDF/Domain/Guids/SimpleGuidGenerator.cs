@@ -11,4 +11,9 @@ public class SimpleGuidGenerator : IGuidGenerator
     {
         return Guid.NewGuid();
     }
+
+    public virtual string CreateString(string? format = null)
+    {
+        return format is null ? this.Create().ToString("N") : this.Create().ToString(format);
+    }
 }

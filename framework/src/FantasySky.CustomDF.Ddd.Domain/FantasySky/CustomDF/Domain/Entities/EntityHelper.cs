@@ -10,6 +10,17 @@ namespace FantasySky.CustomDF.Domain.Entities;
 /// </summary>
 public static class EntityHelper
 {
+    public static bool IsMultiTenant<TEntity>()
+        where TEntity : IEntity
+    {
+        return IsMultiTenant(typeof(TEntity));
+    }
+
+    public static bool IsMultiTenant(Type type)
+    {
+        return typeof(IMultiTenant).IsAssignableFrom(type);
+    }
+
     public static bool EntityEquals(IEntity entity1, IEntity entity2)
     {
         if (entity1 == null || entity2 == null)
@@ -115,6 +126,16 @@ public static class EntityHelper
         }
 
         return true;
+    }
+
+    public static void TrySetId<TKey>(
+        IEntity<TKey> entity,
+        Func<TKey> idFactory)
+    {
+        ObjectHelper.TrySetProperty(
+            entity,
+            x => x.Id,
+            idFactory);
     }
 
     public static void TrySetTenantId(IEntity entity)
