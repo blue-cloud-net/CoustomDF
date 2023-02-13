@@ -4,7 +4,7 @@ namespace FantasySky.CustomDF.Domain.Entities.Specifications;
 /// 定义查询分页的结果
 /// </summary>
 /// <typeparam name="TEntity"></typeparam>
-public interface IPagedList<TEntity> where TEntity : IEntity
+public interface IPagedList<TEntity>
 {
     /// <summary>
     /// 是否有下一页
@@ -34,7 +34,7 @@ public interface IPagedList<TEntity> where TEntity : IEntity
     /// <summary>
     /// 总条数
     /// </summary>
-    public int TotalCount { get; set; }
+    public long TotalCount { get; set; }
 
     /// <summary>
     /// 总页数

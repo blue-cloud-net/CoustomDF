@@ -1,7 +1,24 @@
 namespace FantasySky.CustomDF.Domain.Entities.Specifications;
 
-public class PagedList<TEntity> : IPagedList<TEntity> where TEntity : IEntity
+public class PagedList<TEntity> : IPagedList<TEntity>
 {
+    public PagedList()
+    { }
+
+    public PagedList(
+        Page page, IEnumerable<TEntity> items, long totalCount)
+    {
+        this.PageIndex = page.PageIndex;
+        this.PageSize = page.PageSize;
+        this.Items = items;
+
+        this.TotalCount = totalCount;
+        this.TotalPages = (int)Math.Ceiling((double)totalCount / (double)page.PageSize);
+
+        this.HasNextPages = this.PageIndex < this.TotalPages;
+        this.HasPrevPages = this.PageIndex - 1 > 0;
+    }
+
     /// <summary>
     /// 是否有下一页
     /// </summary>
@@ -30,7 +47,7 @@ public class PagedList<TEntity> : IPagedList<TEntity> where TEntity : IEntity
     /// <summary>
     /// 总条数
     /// </summary>
-    public int TotalCount { get; set; }
+    public long TotalCount { get; set; }
 
     /// <summary>
     /// 总页数
