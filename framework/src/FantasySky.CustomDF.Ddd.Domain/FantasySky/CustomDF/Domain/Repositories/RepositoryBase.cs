@@ -44,7 +44,13 @@ public abstract class RepositoryBase<TEntity> : IBasicRepository<TEntity>
         }
     }
 
+    public abstract Task<bool> AnyAsync(CancellationToken cancellationToken = default);
+
+    public abstract Task<bool> AnyAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken = default);
+
     public abstract Task<long> GetCountAsync(CancellationToken cancellationToken = default);
+
+    public abstract Task<long> GetCountAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken = default);
 
     public abstract Task<TEntity?> FirstOrDefaultAsync(Expression<Func<TEntity, bool>> predicate, bool includeDetails = true, CancellationToken cancellationToken = default);
 

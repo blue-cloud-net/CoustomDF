@@ -11,6 +11,32 @@ public interface IReadOnlyRepository<TEntity> : IRepository
     //IAsyncQueryableExecuter AsyncExecuter { get; }
 
     /// <summary>
+    /// Asynchronously determines whether a sequence contains any elements.
+    /// </summary>
+    /// <param name="cancellationToken">A <see cref="T:System.Threading.CancellationToken" /> to observe while waiting for the task to complete.</param>
+    Task<bool> AnyAsync(CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Asynchronously determines whether a sequence contains any elements by the given <paramref name="predicate" />.
+    /// </summary>
+    /// <param name="predicate">A condition to filter the entities</param>
+    /// <param name="cancellationToken">A <see cref="T:System.Threading.CancellationToken" /> to observe while waiting for the task to complete.</param>
+    Task<bool> AnyAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Gets total count of all entities.
+    /// </summary>
+    /// <param name="cancellationToken">A <see cref="T:System.Threading.CancellationToken" /> to observe while waiting for the task to complete.</param>
+    Task<long> GetCountAsync(CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Gets total count of all entities.
+    /// </summary>
+    /// <param name="predicate">A condition to filter the entities</param>
+    /// <param name="cancellationToken">A <see cref="T:System.Threading.CancellationToken" /> to observe while waiting for the task to complete.</param>
+    Task<long> GetCountAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken = default);
+
+    /// <summary>
     /// Gets an entity with given primary key or null if not found.
     /// </summary>
     /// <param name="predicate">A condition to filter the entities</param>
@@ -18,11 +44,6 @@ public interface IReadOnlyRepository<TEntity> : IRepository
     /// <param name="cancellationToken">A <see cref="T:System.Threading.CancellationToken" /> to observe while waiting for the task to complete.</param>
     /// <returns>Entity or null</returns>
     Task<TEntity?> FirstOrDefaultAsync(Expression<Func<TEntity, bool>> predicate, bool includeDetails = true, CancellationToken cancellationToken = default);
-
-    /// <summary>
-    /// Gets total count of all entities.
-    /// </summary>
-    Task<long> GetCountAsync(CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Gets a list of all the entities.

@@ -25,8 +25,17 @@ public class EfCoreRepository<TDbContext, TEntity> : RepositoryBase<TEntity>, IE
         throw new NotImplementedException();
     }
 
+    public override async Task<bool> AnyAsync(CancellationToken cancellationToken = default)
+        => await (await this.GetDbSetAsync()).AnyAsync(cancellationToken);
+
+    public override async Task<bool> AnyAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken = default)
+        => await (await this.GetDbSetAsync()).Where(predicate).AnyAsync(cancellationToken);
+
     public override async Task<long> GetCountAsync(CancellationToken cancellationToken = default)
         => await (await this.GetDbSetAsync()).LongCountAsync(cancellationToken);
+
+    public override async Task<long> GetCountAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken = default)
+        => await (await this.GetDbSetAsync()).Where(predicate).LongCountAsync(cancellationToken);
 
     public override Task<TEntity?> FirstOrDefaultAsync(Expression<Func<TEntity, bool>> predicate, bool includeDetails = true, CancellationToken cancellationToken = default)
     {
