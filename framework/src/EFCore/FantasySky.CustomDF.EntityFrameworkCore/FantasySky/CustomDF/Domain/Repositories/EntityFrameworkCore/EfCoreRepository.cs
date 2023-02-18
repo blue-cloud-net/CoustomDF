@@ -37,10 +37,10 @@ public class EfCoreRepository<TDbContext, TEntity> : RepositoryBase<TEntity>, IE
     public override async Task<long> GetCountAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken = default)
         => await (await this.GetDbSetAsync()).Where(predicate).LongCountAsync(cancellationToken);
 
-    public override Task<TEntity?> FirstOrDefaultAsync(Expression<Func<TEntity, bool>> predicate, bool includeDetails = true, CancellationToken cancellationToken = default)
-    {
-        throw new NotImplementedException();
-    }
+    public override async Task<TEntity?> FirstOrDefaultAsync(Expression<Func<TEntity, bool>> predicate, bool includeDetails = true, CancellationToken cancellationToken = default)
+    => includeDetails
+            ? await (await this.WithDetailsAsync()).FirstOrDefaultAsync(predicate, cancellationToken)
+            : await (await this.GetDbSetAsync()).FirstOrDefaultAsync(predicate, cancellationToken);
 
     public override async Task<List<TEntity>> GetListAsync(bool includeDetails = false, CancellationToken cancellationToken = default)
         => includeDetails

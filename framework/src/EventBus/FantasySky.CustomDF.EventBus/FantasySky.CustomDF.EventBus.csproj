@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<Import Project="..\..\..\common.props" />
+
+	<ItemGroup>
+	  <ProjectReference Include="..\FantasySky.CustomDF.EventBus.Abstractions\FantasySky.CustomDF.EventBus.Abstractions.csproj" />
+	</ItemGroup>
+
+</Project>

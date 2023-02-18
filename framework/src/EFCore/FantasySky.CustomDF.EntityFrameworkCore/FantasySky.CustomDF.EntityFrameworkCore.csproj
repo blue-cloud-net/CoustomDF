@@ -1,10 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-	<Import Project="..\..\common.props" />
+	<Import Project="..\..\..\common.props" />
 
 	<ItemGroup>
-	  <ProjectReference Include="..\FantasySky.CustomDF.Core\FantasySky.CustomDF.Core.csproj" />
-	  <ProjectReference Include="..\FantasySky.CustomDF.Ddd.Domain\FantasySky.CustomDF.Ddd.Domain.csproj" />
+	  <ProjectReference Include="..\..\FantasySky.CustomDF.Core\FantasySky.CustomDF.Core.csproj" />
+	  <ProjectReference Include="..\..\FantasySky.CustomDF.Ddd.Domain\FantasySky.CustomDF.Ddd.Domain.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
