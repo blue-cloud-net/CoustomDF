@@ -14,7 +14,7 @@ public class DaprClientFactory : IDaprClientFactory
         this.DaprOptions = options.Value;
     }
 
-    public DaprClient Create(Action<DaprClientBuilder> builderAction = null)
+    public DaprClient Create(Action<DaprClientBuilder>? builderAction = null)
     {
         var builder = new DaprClientBuilder();
 
@@ -33,7 +33,7 @@ public class DaprClientFactory : IDaprClientFactory
         return builder.Build();
     }
 
-    public HttpClient CreateHttpClient(string appId = null, string daprEndpoint = null, string daprApiToken = null)
+    public HttpClient CreateHttpClient(string? appId = null, string? daprEndpoint = null, string? daprApiToken = null)
     {
         throw new NotImplementedException();
     }
