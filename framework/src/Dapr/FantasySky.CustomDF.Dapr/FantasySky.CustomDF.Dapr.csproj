@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<Import Project="..\..\..\common.props" />
+
+	<ItemGroup>
+		<PackageReference Include="Dapr.Client" Version="1.9.0" />
+		<PackageReference Include="Microsoft.Extensions.Options" Version="7.0.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\..\FantasySky.CustomDF.Core\FantasySky.CustomDF.Core.csproj" />
+	</ItemGroup>
+
+</Project>

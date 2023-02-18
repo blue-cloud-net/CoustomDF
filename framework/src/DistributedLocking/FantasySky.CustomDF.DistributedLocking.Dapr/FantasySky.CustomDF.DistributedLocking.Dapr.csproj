@@ -3,10 +3,7 @@
 	<Import Project="..\..\..\common.props" />
 
 	<ItemGroup>
-	  <PackageReference Include="Dapr.Client" Version="1.9.0" />
-	</ItemGroup>
-
-	<ItemGroup>
+	  <ProjectReference Include="..\..\Dapr\FantasySky.CustomDF.Dapr\FantasySky.CustomDF.Dapr.csproj" />
 	  <ProjectReference Include="..\FantasySky.CustomDF.DistributedLocking\FantasySky.CustomDF.DistributedLocking.csproj" />
 	</ItemGroup>
 
