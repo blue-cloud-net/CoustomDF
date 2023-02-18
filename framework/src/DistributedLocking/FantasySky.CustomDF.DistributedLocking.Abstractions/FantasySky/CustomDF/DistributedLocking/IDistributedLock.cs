@@ -11,5 +11,5 @@ public interface IDistributedLock
     /// <param name="key">The key name of the lock</param>
     /// <param name="timeout">How long to wait before giving up on the acquisition attempt. Defaults to 0</param>
     /// <param name="cancellationToken">Cancellation token</param>
-    Task<IDistributedLockHandle> TryAcquireAsync(string key, TimeSpan? timeout = null, CancellationToken cancellationToken = default);
+    Task<IDistributedLockHandle?> TryAcquireAsync(string key, TimeSpan? timeout = null, CancellationToken cancellationToken = default);
 }

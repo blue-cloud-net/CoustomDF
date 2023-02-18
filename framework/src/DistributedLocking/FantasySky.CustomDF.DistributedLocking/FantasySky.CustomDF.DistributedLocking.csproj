@@ -4,6 +4,12 @@
 
 	<ItemGroup>
 		<PackageReference Include="DistributedLock.Core" Version="1.0.4" />
+		<PackageReference Include="Microsoft.Extensions.Options" Version="7.0.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\..\FantasySky.CustomDF.Core\FantasySky.CustomDF.Core.csproj" />
+	  <ProjectReference Include="..\FantasySky.CustomDF.DistributedLocking.Abstractions\FantasySky.CustomDF.DistributedLocking.Abstractions.csproj" />
 	</ItemGroup>
 
 </Project>

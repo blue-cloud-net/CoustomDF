@@ -2,14 +2,14 @@ using Medallion.Threading;
 
 namespace FantasySky.CustomDF.DistributedLocking;
 
-internal class MedallionDistributedLockHandle : IDistributedLockHandle
+internal class DistributedLockHandle : IDistributedLockHandle
 {
-    public MedallionDistributedLockHandle(IDistributedSynchronizationHandle handle)
+    public DistributedLockHandle(IDistributedSynchronizationHandle handle)
     {
         this.Handle = handle;
     }
 
-    public IDistributedSynchronizationHandle Handle { get; }
+    protected IDistributedSynchronizationHandle Handle { get; }
 
     public ValueTask DisposeAsync()
     {

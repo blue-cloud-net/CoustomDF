@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<Import Project="..\..\..\common.props" />
+
+	<ItemGroup>
+		<PackageReference Include="DistributedLock.Core" Version="1.0.4" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\FantasySky.CustomDF.DistributedLocking\FantasySky.CustomDF.DistributedLocking.csproj" />
+	</ItemGroup>
+
+</Project>

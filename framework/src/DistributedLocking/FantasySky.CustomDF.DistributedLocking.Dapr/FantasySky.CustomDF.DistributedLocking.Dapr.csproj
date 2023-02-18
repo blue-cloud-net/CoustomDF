@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<Import Project="..\..\..\common.props" />
+
+	<ItemGroup>
+	  <PackageReference Include="Dapr.Client" Version="1.9.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\FantasySky.CustomDF.DistributedLocking\FantasySky.CustomDF.DistributedLocking.csproj" />
+	</ItemGroup>
+
+</Project>
