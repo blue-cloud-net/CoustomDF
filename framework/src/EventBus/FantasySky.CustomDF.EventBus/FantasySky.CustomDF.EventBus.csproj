@@ -3,6 +3,7 @@
 	<Import Project="..\..\..\common.props" />
 
 	<ItemGroup>
+	  <ProjectReference Include="..\..\FantasySky.CustomDF.Core\FantasySky.CustomDF.Core.csproj" />
 	  <ProjectReference Include="..\FantasySky.CustomDF.EventBus.Abstractions\FantasySky.CustomDF.EventBus.Abstractions.csproj" />
 	</ItemGroup>
 
