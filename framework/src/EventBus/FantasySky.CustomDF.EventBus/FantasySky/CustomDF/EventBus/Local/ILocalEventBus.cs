@@ -1,3 +1,4 @@
+using FantasySky.CstomDF.EventBus;
 using FantasySky.CstomDF.EventBus.Local;
 
 namespace FantasySky.CustomDF.EventBus.Local;
@@ -13,5 +14,13 @@ public interface ILocalEventBus : IEventBus
     /// <typeparam name="TEvent">Event type</typeparam>
     /// <param name="handler">Object to handle the event</param>
     IDisposable Subscribe<TEvent>(ILocalEventHandler<TEvent> handler)
-        where TEvent : class;
+        where TEvent : IEvent;
+
+    /// <summary>
+    /// Unregisters from an event.
+    /// </summary>
+    /// <typeparam name="TEvent">Event type</typeparam>
+    /// <param name="handler">Handler object that is registered before</param>
+    void Unsubscribe<TEvent>(ILocalEventHandler<TEvent> handler)
+        where TEvent : IEvent;
 }
