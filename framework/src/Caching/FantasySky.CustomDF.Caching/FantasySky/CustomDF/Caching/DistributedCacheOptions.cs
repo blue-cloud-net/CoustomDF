@@ -4,6 +4,8 @@ namespace FantasySky.CustomDF.Caching;
 
 public class DistributedCacheOptions
 {
+    public static string Path = "DistributedCache";
+
     public DistributedCacheOptions()
     {
         this.KeyPrefix = String.Empty;

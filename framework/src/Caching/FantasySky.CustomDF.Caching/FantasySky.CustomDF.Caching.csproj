@@ -8,6 +8,7 @@
 
 	<ItemGroup>
 	  <ProjectReference Include="..\..\FantasySky.CustomDF.Core\FantasySky.CustomDF.Core.csproj" />
+	  <ProjectReference Include="..\..\Json\FantasySky.CustomDF.Json.SystemTextJson\FantasySky.CustomDF.Json.SystemTextJson.csproj" />
 	</ItemGroup>
 
 </Project>
