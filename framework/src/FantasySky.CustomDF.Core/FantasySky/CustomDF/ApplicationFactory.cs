@@ -10,15 +10,6 @@ public static class ApplicationFactory
         IConfiguration configuration,
         Action<ApplicationCreationOptions>? optionsAction = null)
     {
-        return Create(typeof(TStartup), services, configuration, optionsAction);
-    }
-
-    public static IApplicationServiceProvider Create(
-        Type startuType,
-        IServiceCollection services,
-        IConfiguration configuration,
-        Action<ApplicationCreationOptions>? optionsAction = null)
-    {
-        return new ApplicationServiceProvider(startuType, services, configuration, optionsAction);
+        return new ApplicationServiceProvider<TStartup>(services, configuration, optionsAction);
     }
 }

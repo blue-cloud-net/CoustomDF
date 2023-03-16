@@ -4,21 +4,21 @@ namespace FantasySky.CustomDF.Internal;
 
 internal static class InternalServiceCollectionExtensions
 {
-    internal static void AddCoreAbpServices(this IServiceCollection services,
-        IApplication abpApplication,
+    internal static void AddAppCoreServices<Startup>(this IServiceCollection services,
+        IApplication application,
         ApplicationCreationOptions applicationCreationOptions)
     {
         // TODO
 
-        services.AddAssemblyOf<IApplication>();
+        services.AddAssemblyOf<Startup>();
     }
 
     internal static void AddCoreServices(this IServiceCollection services)
     {
-        // TODO
+        services.AddOptions();
+        services.AddLogging();
 
-        //services.AddOptions();
-        //services.AddLogging();
+        // TODO
         //services.AddLocalization();
     }
 }

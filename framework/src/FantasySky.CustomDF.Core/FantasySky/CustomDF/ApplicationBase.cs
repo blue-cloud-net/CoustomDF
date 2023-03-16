@@ -8,20 +8,18 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace FantasySky.CustomDF;
 
-public abstract class ApplicationBase : IApplication
+public abstract class ApplicationBase<Startup> : IApplication
 {
     private bool _configuredServices;
 
     internal ApplicationBase(
-        Type startupType,
         IServiceCollection services,
         IConfiguration configuration,
         Action<ApplicationCreationOptions>? optionsAction)
     {
-        Check.IsNotNull(startupType, nameof(startupType));
         Check.IsNotNull(services, nameof(services));
 
-        this.StartupType = startupType;
+        this.StartupType = typeof(Startup);
         this.Services = services;
         this.Configuration = configuration;
 
@@ -34,7 +32,7 @@ public abstract class ApplicationBase : IApplication
         services.AddSingleton<IApplicationInfoAccessor>(this);
 
         services.AddCoreServices();
-        services.AddCoreAbpServices(this, options);
+        services.AddAppCoreServices<Startup>(this, options);
 
         if (!options.SkipConfigureServices)
         {
@@ -54,8 +52,6 @@ public abstract class ApplicationBase : IApplication
         this.CheckMultipleConfigureServices();
 
         _configuredServices = true;
-
-        throw new NotImplementedException();
     }
 
     public virtual void Dispose()

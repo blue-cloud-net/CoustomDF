@@ -12,6 +12,7 @@ public class ApplicationCreationOptions
     }
 
     public string? ApplicationName { get; set; }
+
     public IServiceCollection Services { get; }
 
     /// <summary>

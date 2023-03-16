@@ -1,23 +1,16 @@
-//using System.Diagnostics.CodeAnalysis;
+using FantasySky.CustomDF;
 
-//using FantasySky.CustomDF;
+using Microsoft.Extensions.Configuration;
 
-//namespace Microsoft.Extensions.DependencyInjection;
+namespace Microsoft.Extensions.DependencyInjection;
 
-//public static class ServiceCollectionApplicationExtensions
-//{
-//    public static IApplicationServiceProvider AddApplication<StartupType>(
-//        this IServiceCollection services,
-//        Action<ApplicationCreationOptions>? optionsAction = null)
-//    {
-//        return ApplicationFactory.Create<StartupType>(services, optionsAction);
-//    }
-
-//    public static IApplicationServiceProvider AddApplication(
-//        this IServiceCollection services,
-//        Type startupType,
-//        Action<ApplicationCreationOptions>? optionsAction = null)
-//    {
-//        return ApplicationFactory.Create(startupType, services, optionsAction);
-//    }
-//}
+public static class ServiceCollectionApplicationExtensions
+{
+    public static IApplicationServiceProvider CreateApplication<Startup>(
+        this IServiceCollection services,
+        IConfiguration configuration,
+        Action<ApplicationCreationOptions>? optionsAction = null)
+    {
+        return ApplicationFactory.Create<Startup>(services, configuration, optionsAction);
+    }
+}

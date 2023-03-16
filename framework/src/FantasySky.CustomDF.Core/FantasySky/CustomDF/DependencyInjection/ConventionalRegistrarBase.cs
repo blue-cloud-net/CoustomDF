@@ -75,20 +75,20 @@ public abstract class ConventionalRegistrarBase : IConventionalRegistrar
 
     protected virtual ServiceLifetime? GetServiceLifetimeFromClassHierarchy(Type type)
     {
-        if (typeof(ITransientDependency).GetTypeInfo().IsAssignableFrom(type))
-        {
-            return ServiceLifetime.Transient;
-        }
+        //if (typeof(ITransientDependency).GetTypeInfo().IsAssignableFrom(type))
+        //{
+        //    return ServiceLifetime.Transient;
+        //}
 
-        if (typeof(ISingletonDependency).GetTypeInfo().IsAssignableFrom(type))
-        {
-            return ServiceLifetime.Singleton;
-        }
+        //if (typeof(ISingletonDependency).GetTypeInfo().IsAssignableFrom(type))
+        //{
+        //    return ServiceLifetime.Singleton;
+        //}
 
-        if (typeof(IScopedDependency).GetTypeInfo().IsAssignableFrom(type))
-        {
-            return ServiceLifetime.Scoped;
-        }
+        //if (typeof(IScopedDependency).GetTypeInfo().IsAssignableFrom(type))
+        //{
+        //    return ServiceLifetime.Scoped;
+        //}
 
         return null;
     }

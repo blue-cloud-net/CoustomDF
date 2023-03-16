@@ -37,7 +37,6 @@ public static class QueryableExtensions
     /// </summary>
     /// <param name="query">Queryable to apply filtering</param>
     /// <param name="sorting">Order the query</param>
-    /// <returns>Order or not order query based on <paramref name="condition"/></returns>
     public static TQueryable OrderByIf<T, TQueryable>(this TQueryable query, string sorting)
         where TQueryable : IQueryable<T>
     {

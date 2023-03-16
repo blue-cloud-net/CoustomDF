@@ -3,10 +3,12 @@
 	<Import Project="..\..\common.props" />
 
 	<ItemGroup>
-	  <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="7.0.0" />
-	  <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
-	  <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.0" />
+	  <PackageReference Include="Microsoft.Extensions.Options" Version="$(MicrosoftPackageVersion)" />
+	  <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="$(MicrosoftPackageVersion)" />
+	  <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="$(MicrosoftPackageVersion)" />
+	  <PackageReference Include="Microsoft.Extensions.Logging" Version="$(MicrosoftPackageVersion)" />
 	  <PackageReference Include="System.Linq.Dynamic.Core" Version="1.2.18" />
+	  <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="6.27.0" />
 	</ItemGroup>
 
 </Project>
