@@ -3,9 +3,20 @@
 	<Import Project="..\..\common.props" />
 
 	<ItemGroup>
-	  <PackageReference Include="Microsoft.AspNetCore" Version="2.2.0" />
-	  <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
-	  <PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.0" />
+		<FrameworkReference Include="Microsoft.AspNetCore.App" />
+	</ItemGroup>
+	
+	<ItemGroup>
+	  <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="$(MicrosoftAspNetCorePackageVersion)" />
+	  <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+	</ItemGroup>
+	
+	<ItemGroup>
+	  <ProjectReference Include="..\FantasySky.CustomDF.Core\FantasySky.CustomDF.Core.csproj" />
+	</ItemGroup>
+	
+	<ItemGroup>
+	  <Folder Include="FantasySky\CustomDF\" />
 	</ItemGroup>
 
 </Project>
