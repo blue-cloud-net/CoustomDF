@@ -3,6 +3,7 @@ using System.Linq.Expressions;
 
 using FantasySky.CustomDF.Domain.Entities.Specifications;
 using FantasySky.CustomDF.EntityFrameworkCore;
+using FantasySky.CustomDF.Exceptions;
 
 using Microsoft.Extensions.DependencyInjection;
 
@@ -145,5 +146,51 @@ public class EfCoreRepository<TDbContext, TEntity> : RepositoryBase<TEntity>, IE
             entity,
             () => this.GuidGenerator.Create()
         );
+    }
+}
+
+public class EfCoreRepository<TDbContext, TEntity, TKey> :
+    EfCoreRepository<TDbContext, TEntity>,
+    IEfCoreRepository<TEntity, TKey>
+
+    where TDbContext : DbContext
+    where TEntity : class, IEntity<TKey>
+    where TKey : notnull
+{
+    public EfCoreRepository(IServiceProvider serviceProvider) : base(serviceProvider)
+    {
+    }
+
+    public async Task DeleteAsync(TKey id, bool autoSave = false, CancellationToken cancellationToken = default)
+    {
+        var entity = await this.FindAsync(id, cancellationToken: cancellationToken);
+        if (entity == null)
+        {
+            return;
+        }
+
+        await this.DeleteAsync(entity, autoSave, cancellationToken);
+    }
+
+    public async Task DeleteManyAsync([NotNull] IEnumerable<TKey> ids, bool autoSave = false, CancellationToken cancellationToken = default)
+    {
+        var entities = await (await this.GetDbSetAsync()).Where(x => ids.Contains(x.Id)).ToListAsync(cancellationToken);
+
+        await this.DeleteManyAsync(entities, autoSave, cancellationToken);
+    }
+
+    public async Task<TEntity?> FindAsync(TKey id, bool includeDetails = true, CancellationToken cancellationToken = default)
+    {
+        return includeDetails
+            ? await (await this.WithDetailsAsync()).OrderBy(e => e.Id).FirstOrDefaultAsync(e => e.Id.Equals(id), cancellationToken)
+            : await (await this.GetDbSetAsync()).FindAsync(new object[] { id }, cancellationToken);
+    }
+
+    public async Task<TEntity> GetAsync(TKey id, bool includeDetails = true, CancellationToken cancellationToken = default)
+    {
+        var entity = await this.FindAsync(id, includeDetails, cancellationToken)
+            ?? throw new EntityNotFoundException(typeof(TEntity), id);
+
+        return entity;
     }
 }

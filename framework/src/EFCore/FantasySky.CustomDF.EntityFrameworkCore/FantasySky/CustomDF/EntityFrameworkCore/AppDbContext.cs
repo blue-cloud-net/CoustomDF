@@ -1,8 +1,11 @@
 using FantasySky.CustomDF.DependencyInjection;
 
+using Microsoft.Extensions.DependencyInjection;
+
 namespace FantasySky.CustomDF.EntityFrameworkCore;
 
-public abstract class AppDbContext<TDbContext> : DbContext, ITransientDependency
+[Dependency(ServiceLifetime.Transient)]
+public abstract class AppDbContext<TDbContext> : DbContext
     where TDbContext : DbContext
 {
 }
