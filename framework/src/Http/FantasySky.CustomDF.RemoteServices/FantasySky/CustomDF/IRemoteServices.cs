@@ -5,5 +5,4 @@ namespace FantasySky.CustomDF;
 /// </summary>
 public interface IRemoteServices
 {
-
 }

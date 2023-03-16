@@ -15,9 +15,8 @@ public class ArrayToStringValueConverter<T> : ValueConverter<T[], string>
         Check.IsNotNullOrWhiteSpace(split, nameof(split));
     }
 
-    private static string SerializeObject(T[] d, Func<T, string> objectSerialize,string split)
+    private static string SerializeObject(T[] d, Func<T, string> objectSerialize, string split)
     {
-
         return d.Select(objectSerialize).JoinAsString(split);
     }
 

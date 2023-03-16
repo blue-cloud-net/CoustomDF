@@ -4,7 +4,6 @@ public static class AppServiceCollectionExtensions
 {
     internal static IServiceCollection AddWebAppServices(this IServiceCollection services, Action<IServiceCollection>? configure = null)
     {
-
         services.AddControllers();
 
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

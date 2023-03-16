@@ -2,13 +2,14 @@ using FantasySky.CstomDF.EventBus;
 using FantasySky.CstomDF.EventBus.Local;
 
 namespace FantasySky.CustomDF.EventBus.Local;
+
 /// <summary>
 /// Defines interface of the event bus.
 /// </summary>
 public interface ILocalEventBus : IEventBus
 {
     /// <summary>
-    /// Registers to an event. 
+    /// Registers to an event.
     /// Same (given) instance of the handler is used for all event occurrences.
     /// </summary>
     /// <typeparam name="TEvent">Event type</typeparam>

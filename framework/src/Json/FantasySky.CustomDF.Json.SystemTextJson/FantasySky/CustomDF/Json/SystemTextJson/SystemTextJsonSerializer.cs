@@ -10,7 +10,6 @@ namespace FantasySky.CustomDF.Json.SystemTextJson;
 [Dependency(typeof(IJsonSerializer))]
 public class SystemTextJsonSerializer : IJsonSerializer
 {
-
     private static readonly ConcurrentDictionary<JsonSerializerInternalOptions, JsonSerializerOptions> _jsonSerializerOptionsCache = new();
 
     public SystemTextJsonSerializer(

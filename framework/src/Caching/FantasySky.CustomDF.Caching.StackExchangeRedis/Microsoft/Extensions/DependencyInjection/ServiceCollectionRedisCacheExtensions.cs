@@ -10,7 +10,6 @@ namespace Microsoft.Extensions.DependencyInjection;
 
 public static class ServiceCollectionRedisCacheExtensions
 {
-
     public static void AddRedisDistributedCache(this ServiceConfigurationContext context)
     {
         context.AddDistributedCache();

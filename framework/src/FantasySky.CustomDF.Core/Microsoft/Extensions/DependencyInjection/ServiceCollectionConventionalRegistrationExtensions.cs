@@ -22,7 +22,7 @@ public static class ServiceCollectionConventionalRegistrationExtensions
         // TODO 没搞明白Abp怎么优化自动DI
         var startupAssembly = typeof(T).GetTypeInfo().Assembly;
 
-        var dllDirectoryPath = Path.GetDirectoryName(startupAssembly.Location) 
+        var dllDirectoryPath = Path.GetDirectoryName(startupAssembly.Location)
             ?? throw new FrameworkException("Can not find the directory of entry assembly.");
 
         var referencedAssemblies = new List<Assembly>(50);

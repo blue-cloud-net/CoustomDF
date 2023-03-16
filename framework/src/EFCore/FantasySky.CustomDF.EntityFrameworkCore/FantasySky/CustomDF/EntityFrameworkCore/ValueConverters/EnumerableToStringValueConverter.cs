@@ -15,9 +15,8 @@ public class EnumerableToStringValueConverter<T> : ValueConverter<IEnumerable<T>
         Check.IsNotNullOrWhiteSpace(split, nameof(split));
     }
 
-    private static string SerializeObject(IEnumerable<T> d, Func<T, string> objectSerialize,string split)
+    private static string SerializeObject(IEnumerable<T> d, Func<T, string> objectSerialize, string split)
     {
-
         return d.Select(objectSerialize).JoinAsString(split);
     }
 
