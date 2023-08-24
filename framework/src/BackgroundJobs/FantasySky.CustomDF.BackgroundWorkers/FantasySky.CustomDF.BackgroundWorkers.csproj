@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<Import Project="..\..\..\common.props" />
+
+	<PropertyGroup>
+		<PackageId>FantasySky.CustomDF.BackgroundWorkers</PackageId>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\FantasySky.CustomDF.Core\FantasySky.CustomDF.Core.csproj" />
+	</ItemGroup>
+
+</Project>
