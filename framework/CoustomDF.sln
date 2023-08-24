@@ -5,12 +5,9 @@ VisualStudioVersion = 17.4.33122.133
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{A1E92215-0BCB-47D4-9F3A-1ED2E3384ACD}"
 	ProjectSection(SolutionItems) = preProject
-		..\.editorconfig = ..\.editorconfig
-		..\.gitattributes = ..\.gitattributes
-		..\.gitignore = ..\.gitignore
+		.editorconfig = .editorconfig
 		common.props = common.props
-		..\Directory.Build.props = ..\Directory.Build.props
-		..\README.md = ..\README.md
+		Directory.Build.props = Directory.Build.props
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{347A782E-D5BC-4DB0-AB89-6062B411477D}"
@@ -63,9 +60,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FantasySky.CustomDF.EventBu
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Json", "Json", "{C04994B5-4389-4A97-AD25-12B67DB6E7C7}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FantasySky.CustomDF.Json.Abstractions", "src\Json\FantasySky.CustomDF.Json.Abstractions\FantasySky.CustomDF.Json.Abstractions.csproj", "{0D896474-A37B-4551-A14E-4B5C6DB9C5D9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FantasySky.CustomDF.Serialize.Json.Abstractions", "src\Serialize\Json\FantasySky.CustomDF.Serialize.Json.Abstractions\FantasySky.CustomDF.Serialize.Json.Abstractions.csproj", "{0D896474-A37B-4551-A14E-4B5C6DB9C5D9}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FantasySky.CustomDF.Json.SystemTextJson", "src\Json\FantasySky.CustomDF.Json.SystemTextJson\FantasySky.CustomDF.Json.SystemTextJson.csproj", "{03E132B9-C74A-4C98-A798-FC9A79B9A323}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FantasySky.CustomDF.Serialize.Json.SystemTextJson", "src\Serialize\Json\FantasySky.CustomDF.Serialize.Json.SystemTextJson\FantasySky.CustomDF.Serialize.Json.SystemTextJson.csproj", "{03E132B9-C74A-4C98-A798-FC9A79B9A323}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Mapping", "Mapping", "{A857F0B6-8A93-43A8-BCDE-7E9300C39097}"
 EndProject
@@ -83,6 +80,20 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Dapr", "Dapr", "{22535931-49DD-419C-B19A-21AA3B36E95A}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FantasySky.CustomDF.Dapr", "src\Dapr\FantasySky.CustomDF.Dapr\FantasySky.CustomDF.Dapr.csproj", "{47DB9698-583E-41EA-A0FD-FF8D53BA0E96}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{2BD6FE8C-8152-41F6-994D-0B3CF8754F29}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FantasySky.CustomDF.Core.UnitTests", "test\Core\FantasySky.CustomDF.Core.UnitTests\FantasySky.CustomDF.Core.UnitTests.csproj", "{9BB9DB8E-10FD-4284-88C7-6C3A9EDDAF9C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FantasySky.CustomDF.Ddd.Domain.UnitTests", "test\Core\FantasySky.CustomDF.Ddd.Domain.UnitTests\FantasySky.CustomDF.Ddd.Domain.UnitTests.csproj", "{8303F4DB-F3FB-44A2-BE0F-038D8F820D2E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Serialize", "Serialize", "{52CBA619-BCD2-4BBF-82F6-332C6A463FB2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BackgroundJobs", "BackgroundJobs", "{8EEB7B73-85F4-4230-AC48-BD14BBBE741E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FantasySky.CustomDF.BackgroundJobs", "src\BackgroundJobs\FantasySky.CustomDF.BackgroundJobs\FantasySky.CustomDF.BackgroundJobs.csproj", "{88F60121-02F8-4328-A503-70299E0C8952}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FantasySky.CustomDF.BackgroundWorkers", "src\BackgroundJobs\FantasySky.CustomDF.BackgroundWorkers\FantasySky.CustomDF.BackgroundWorkers.csproj", "{CFB03489-3787-43D4-B524-5261C1CEEBE7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -178,6 +189,22 @@ Global
 		{47DB9698-583E-41EA-A0FD-FF8D53BA0E96}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{47DB9698-583E-41EA-A0FD-FF8D53BA0E96}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{47DB9698-583E-41EA-A0FD-FF8D53BA0E96}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9BB9DB8E-10FD-4284-88C7-6C3A9EDDAF9C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9BB9DB8E-10FD-4284-88C7-6C3A9EDDAF9C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9BB9DB8E-10FD-4284-88C7-6C3A9EDDAF9C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9BB9DB8E-10FD-4284-88C7-6C3A9EDDAF9C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8303F4DB-F3FB-44A2-BE0F-038D8F820D2E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8303F4DB-F3FB-44A2-BE0F-038D8F820D2E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8303F4DB-F3FB-44A2-BE0F-038D8F820D2E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8303F4DB-F3FB-44A2-BE0F-038D8F820D2E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{88F60121-02F8-4328-A503-70299E0C8952}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{88F60121-02F8-4328-A503-70299E0C8952}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{88F60121-02F8-4328-A503-70299E0C8952}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{88F60121-02F8-4328-A503-70299E0C8952}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CFB03489-3787-43D4-B524-5261C1CEEBE7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CFB03489-3787-43D4-B524-5261C1CEEBE7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CFB03489-3787-43D4-B524-5261C1CEEBE7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CFB03489-3787-43D4-B524-5261C1CEEBE7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -206,7 +233,7 @@ Global
 		{AF31C32E-C716-43BA-B03B-B9BD75B26660} = {8754DA17-B6AB-4A64-B129-0858CF8133D4}
 		{9A4D1618-A0CD-413E-B356-3219E27ABD6F} = {8754DA17-B6AB-4A64-B129-0858CF8133D4}
 		{71B1C897-7B00-470E-8AA2-4DCF62F0DCA2} = {8754DA17-B6AB-4A64-B129-0858CF8133D4}
-		{C04994B5-4389-4A97-AD25-12B67DB6E7C7} = {347A782E-D5BC-4DB0-AB89-6062B411477D}
+		{C04994B5-4389-4A97-AD25-12B67DB6E7C7} = {52CBA619-BCD2-4BBF-82F6-332C6A463FB2}
 		{0D896474-A37B-4551-A14E-4B5C6DB9C5D9} = {C04994B5-4389-4A97-AD25-12B67DB6E7C7}
 		{03E132B9-C74A-4C98-A798-FC9A79B9A323} = {C04994B5-4389-4A97-AD25-12B67DB6E7C7}
 		{A857F0B6-8A93-43A8-BCDE-7E9300C39097} = {347A782E-D5BC-4DB0-AB89-6062B411477D}
@@ -214,6 +241,13 @@ Global
 		{15399D65-CC5F-4240-97A1-5CA06602EEC8} = {074A81D8-28C4-42CA-A0CC-CB6927FA75AF}
 		{22535931-49DD-419C-B19A-21AA3B36E95A} = {347A782E-D5BC-4DB0-AB89-6062B411477D}
 		{47DB9698-583E-41EA-A0FD-FF8D53BA0E96} = {22535931-49DD-419C-B19A-21AA3B36E95A}
+		{2BD6FE8C-8152-41F6-994D-0B3CF8754F29} = {440387C2-A709-4EEC-B3A5-41F8DE063392}
+		{9BB9DB8E-10FD-4284-88C7-6C3A9EDDAF9C} = {2BD6FE8C-8152-41F6-994D-0B3CF8754F29}
+		{8303F4DB-F3FB-44A2-BE0F-038D8F820D2E} = {2BD6FE8C-8152-41F6-994D-0B3CF8754F29}
+		{52CBA619-BCD2-4BBF-82F6-332C6A463FB2} = {347A782E-D5BC-4DB0-AB89-6062B411477D}
+		{8EEB7B73-85F4-4230-AC48-BD14BBBE741E} = {347A782E-D5BC-4DB0-AB89-6062B411477D}
+		{88F60121-02F8-4328-A503-70299E0C8952} = {8EEB7B73-85F4-4230-AC48-BD14BBBE741E}
+		{CFB03489-3787-43D4-B524-5261C1CEEBE7} = {8EEB7B73-85F4-4230-AC48-BD14BBBE741E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {BA9D7F87-48DF-4183-8676-C19CDDAAC484}
