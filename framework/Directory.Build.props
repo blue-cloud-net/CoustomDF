@@ -26,17 +26,17 @@
 
 	<PropertyGroup>
 
-		<!-- All Microsoft AspNetCore packages -->
-		<MicrosoftAspNetCorePackageVersion>7.0.0</MicrosoftAspNetCorePackageVersion>
-
-		<!-- All Microsoft EntityFrameworkCore packages -->
-		<MicrosoftEntityFrameworkCorePackageVersion>7.0.1</MicrosoftEntityFrameworkCorePackageVersion>
-
 		<!-- All Microsoft packages -->
 		<MicrosoftPackageVersion>7.0.0</MicrosoftPackageVersion>
 
+		<!-- All Microsoft AspNetCore packages -->
+		<MicrosoftAspNetCorePackageVersion>7.0.10</MicrosoftAspNetCorePackageVersion>
+
+		<!-- All Microsoft EntityFrameworkCore packages -->
+		<MicrosoftEntityFrameworkCorePackageVersion>7.0.10</MicrosoftEntityFrameworkCorePackageVersion>
+
 		<!-- Microsoft.NET.Test.Sdk https://www.nuget.org/packages/Microsoft.NET.Test.Sdk -->
-		<MicrosoftNETTestSdkPackageVersion>17.6.2</MicrosoftNETTestSdkPackageVersion>
+		<MicrosoftNETTestSdkPackageVersion>17.7.1</MicrosoftNETTestSdkPackageVersion>
 
 		<!-- NUnit https://www.nuget.org/packages/NUnit -->
 		<NUnitPackageVersion>3.13.3</NUnitPackageVersion>

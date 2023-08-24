@@ -11,8 +11,8 @@
 		<PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="$(MicrosoftPackageVersion)" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="$(MicrosoftPackageVersion)" />
 		<PackageReference Include="Microsoft.Extensions.Logging" Version="$(MicrosoftPackageVersion)" />
-		<PackageReference Include="System.Linq.Dynamic.Core" Version="1.3.3" />
-		<PackageReference Include="Microsoft.IdentityModel.Tokens" Version="6.31.0" />
+		<PackageReference Include="System.Linq.Dynamic.Core" Version="1.3.4" />
+		<PackageReference Include="Microsoft.IdentityModel.Tokens" Version="6.32.1" />
 	</ItemGroup>
 
 </Project>

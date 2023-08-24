@@ -34,7 +34,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FantasySky.CustomDF.Distrib
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FantasySky.CustomDF.DistributedLocking.Dapr", "src\DistributedLocking\FantasySky.CustomDF.DistributedLocking.Dapr\FantasySky.CustomDF.DistributedLocking.Dapr.csproj", "{62A6406E-D00B-42A7-A103-2100E72C24F0}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FantasySky.CustomDF.DistributedLocking.DL", "src\DistributedLocking\FantasySky.CustomDF.DistributedLocking.DL\FantasySky.CustomDF.DistributedLocking.DL.csproj", "{D400C572-F14C-4E27-8446-1AA77565105C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FantasySky.CustomDF.DistributedLocking.Medallion", "src\DistributedLocking\FantasySky.CustomDF.DistributedLocking.Medallion\FantasySky.CustomDF.DistributedLocking.Medallion.csproj", "{D400C572-F14C-4E27-8446-1AA77565105C}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "EFCore", "EFCore", "{7C7AAD51-7F46-4E24-AE63-CF77502CBA99}"
 EndProject
