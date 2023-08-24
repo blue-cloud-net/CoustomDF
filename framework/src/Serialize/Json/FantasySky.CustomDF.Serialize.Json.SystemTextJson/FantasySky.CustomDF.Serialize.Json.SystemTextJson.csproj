@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<Import Project="..\..\..\..\common.props" />
+
+	<PropertyGroup>
+		<PackageId>FantasySky.CustomDF.Serialize.Json.SystemTextJson</PackageId>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\FantasySky.CustomDF.Serialize.Json.Abstractions\FantasySky.CustomDF.Serialize.Json.Abstractions.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Folder Include="FantasySky\CustomDF\Serialize\Json\SystemTextJson\JsonConverters\" />
+	</ItemGroup>
+
+</Project>

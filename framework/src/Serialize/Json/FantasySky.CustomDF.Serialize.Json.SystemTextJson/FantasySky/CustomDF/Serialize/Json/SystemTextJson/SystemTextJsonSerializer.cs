@@ -3,19 +3,29 @@ using System.Text.Json;
 
 using FantasySky.CustomDF.DependencyInjection;
 
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
-namespace FantasySky.CustomDF.Json.SystemTextJson;
+namespace FantasySky.CustomDF.Serialize.Json.SystemTextJson;
 
-[Dependency(typeof(IJsonSerializer))]
+/// <summary>
+/// DotNetCore默认的Json序列化器
+/// </summary>
+[Dependency(typeof(IJsonSerializer), ServiceLifetime.Singleton)]
 public class SystemTextJsonSerializer : IJsonSerializer
 {
     private static readonly ConcurrentDictionary<JsonSerializerInternalOptions, JsonSerializerOptions> _jsonSerializerOptionsCache = new();
 
     public SystemTextJsonSerializer(
-        IOptionsSnapshot<JsonSerializerOptions> options)
+        IOptions<JsonSerializerOptions> options)
     {
         this.Options = options.Value;
+    }
+
+    public SystemTextJsonSerializer(
+        JsonSerializerOptions options)
+    {
+        this.Options = options;
     }
 
     public JsonSerializerOptions Options { get; }
@@ -28,6 +38,11 @@ public class SystemTextJsonSerializer : IJsonSerializer
     public object? Deserialize(Type type, string jsonString, bool camelCase = true)
     {
         return JsonSerializer.Deserialize(jsonString, type, this.CreateJsonSerializerOptions(camelCase));
+    }
+
+    public T? Deserialize<T>(ReadOnlySpan<char> jsonString, bool camelCase = true)
+    {
+        return JsonSerializer.Deserialize<T>(jsonString, this.CreateJsonSerializerOptions(camelCase));
     }
 
     public ValueTask<T?> DeserializeAsync<T>(Stream utf8Json, bool camelCase = true)
