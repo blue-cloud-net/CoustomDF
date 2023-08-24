@@ -45,7 +45,7 @@ public abstract class ConventionalRegistrarBase : IConventionalRegistrar
             {
                 return ServiceDescriptor.Describe(
                     serviceType,
-                    provider => provider.GetService(redirectedType),
+                    provider => provider.GetRequiredService(redirectedType),
                     lifeTime
                 );
             }

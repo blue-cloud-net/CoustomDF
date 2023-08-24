@@ -27,6 +27,8 @@ public class DefaultConventionalRegistrar : ConventionalRegistrarBase
 
                 return;
             }
+
+            return;
         }
 
         Type? redirectedType = null;
@@ -35,10 +37,21 @@ public class DefaultConventionalRegistrar : ConventionalRegistrarBase
         {
             var serviceDescriptor = base.CreateServiceDescriptor(
                 type,
-                dependencyAttribute.InterfaceType ?? type,
+                // named service 以原类型注册
+                dependencyAttribute.ServiceName.IsNullOrWhiteSpace() ?
+                dependencyAttribute.InterfaceType ?? type : type,
                 redirectedType,
                 dependencyAttribute.Lifetime
             );
+
+            // named servcie
+            if (!dependencyAttribute.ServiceName.IsNullOrWhiteSpace())
+            {
+                services.AddNameService(
+                    dependencyAttribute.InterfaceType ?? type,
+                    type,
+                    dependencyAttribute.ServiceName);
+            }
 
             if (dependencyAttribute?.ReplaceServices == true)
             {

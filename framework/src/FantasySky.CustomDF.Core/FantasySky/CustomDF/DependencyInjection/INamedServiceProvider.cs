@@ -1,5 +1,4 @@
 namespace FantasySky.CustomDF.DependencyInjection;
-
 /// <summary>
 /// 命名服务提供器
 /// </summary>

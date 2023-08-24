@@ -11,11 +11,11 @@ public class NamedServiceProvider<TService> : INamedServiceProvider<TService>
     where TService : class
 {
     private readonly IServiceProvider _serviceProvider;
-    private readonly IDictionary<string, Type> _servicesTypeMap;
+    private readonly INamedServiceTypeMap _servicesTypeMap;
 
     public NamedServiceProvider(
         IServiceProvider serviceProvider,
-        IDictionary<string, Type> servicesTypeMap)
+        INamedServiceTypeMap servicesTypeMap)
     {
         _serviceProvider = serviceProvider;
         _servicesTypeMap = servicesTypeMap;
@@ -23,9 +23,9 @@ public class NamedServiceProvider<TService> : INamedServiceProvider<TService>
 
     public TService GetRequiredService(string serviceName)
     {
-        if (_servicesTypeMap.TryGetValue(serviceName, out var type))
+        if (_servicesTypeMap.TryGetType<TService>(serviceName, out var type))
         {
-            return _serviceProvider.GetRequiredService<TService>();
+            return this.GetRequiredService(type);
         }
 
         throw new InvalidOperationException($"Named service `{serviceName}` is not registered in container.");
@@ -33,11 +33,15 @@ public class NamedServiceProvider<TService> : INamedServiceProvider<TService>
 
     public TService? GetService(string serviceName)
     {
-        if (_servicesTypeMap.TryGetValue(serviceName, out var type))
+        if (_servicesTypeMap.TryGetType<TService>(serviceName, out var type))
         {
-            return _serviceProvider.GetRequiredService<TService>();
+            return this.GetRequiredService(type);
         }
 
         return null;
     }
+
+    private TService GetRequiredService(Type implType)
+        => _serviceProvider.GetService(implType) as TService
+            ?? throw new InvalidOperationException($"Not mathch impl type '{implType.Name}' in interface type '{typeof(TService).Name}'.");
 }
