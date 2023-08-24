@@ -9,7 +9,20 @@ public struct CommonNo
     {
         this.No = no;
         this.GenerateDate = DateTimeOffset.UtcNow;
+
+        this.ToStringFunction = x => $"{x.GenerateDate.ToCustomShortDate()}{x.No:D5}";
+        ;
     }
+
+    public CommonNo(long no, Func<CommonNo, string> toStringFunction)
+    {
+        this.No = no;
+        this.GenerateDate = DateTimeOffset.UtcNow;
+
+        this.ToStringFunction = toStringFunction;
+    }
+
+    public Func<CommonNo, string> ToStringFunction { get; set; }
 
     /// <summary>
     /// 序号
@@ -21,10 +34,7 @@ public struct CommonNo
     /// </summary>
     public DateTimeOffset GenerateDate { get; }
 
-    public override string ToString()
-    {
-        return $"{this.GenerateDate.ToCustomShortDate()}{this.No:D5}";
-    }
+    public override string ToString() => this.ToStringFunction(this);
 
     public string ToString(string stringTemple)
     {

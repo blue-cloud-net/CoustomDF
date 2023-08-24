@@ -1,5 +1,3 @@
-using FantasySky.CustomDF.Domain.Values;
-
 using Microsoft.Extensions.Caching.Distributed;
 
 namespace FantasySky.CustomDF.Caching;
@@ -322,23 +320,4 @@ public interface IDistributedCache<TCacheItem, TCacheKey>
         CancellationToken cancellationToken = default);
 
     #endregion
-}
-
-public interface INoIncrementer
-{
-    /// <summary>
-    /// Increame the cache item value for the provided key.
-    /// </summary>
-    /// <param name="key">The key of cached item to be retrieved from the cache.</param>
-    /// <param name="cancellationToken"></param>
-    /// <returns>The cache item, or null.</returns>
-    Task<CommonNo> IncreameAsync(
-        string key,
-        CancellationToken cancellationToken = default
-    );
-
-    Task<CommonNo> IncrementByDateAsync(
-        string key,
-        CancellationToken cancellationToken
-    );
 }

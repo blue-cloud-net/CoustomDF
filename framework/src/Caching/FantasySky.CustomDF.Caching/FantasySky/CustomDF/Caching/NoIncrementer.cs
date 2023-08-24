@@ -20,7 +20,17 @@ public class NoIncrementer : DistributedCache<string, CommonNo>, IDistributedCac
     {
     }
 
-    public async Task<CommonNo> IncreameAsync(string key, CancellationToken cancellationToken)
+    public Task<CommonNo> IncreametAsync(string key, CancellationToken cancellationToken = default)
+        => this.IncreametAsync(key, cancellationToken: cancellationToken);
+
+    public Task<CommonNo> IncreametAsync(string key, string field, CancellationToken cancellationToken = default)
+        => this.IncreametAsync(key, field, cancellationToken: cancellationToken);
+
+    public async Task<CommonNo> IncreametAsync(
+        string key,
+        string? field = null,
+        Func<CommonNo, string>? buildNoAction = null,
+        CancellationToken cancellationToken = default)
     {
         if (this.Cache is ICacheSupportsIncrement incrementCache)
         {
@@ -28,10 +38,10 @@ public class NoIncrementer : DistributedCache<string, CommonNo>, IDistributedCac
             {
                 var result = await incrementCache.IncrementAsync(
                     key,
-                    "key",
+                    field.IsNullOrWhiteSpace() ? "key" : field,
                     cancellationToken: cancellationToken);
 
-                return new(result);
+                return buildNoAction is null ? new(result) : new(result, buildNoAction);
             }
             catch (Exception ex)
             {
@@ -44,7 +54,10 @@ public class NoIncrementer : DistributedCache<string, CommonNo>, IDistributedCac
         throw new NotSupportedException();
     }
 
-    public async Task<CommonNo> IncrementByDateAsync(string key, CancellationToken cancellationToken)
+    public async Task<CommonNo> IncrementByDateAsync(
+        string key,
+        Func<CommonNo, string>? buildNoAction = null,
+        CancellationToken cancellationToken = default)
     {
         if (this.Cache is ICacheSupportsIncrement incrementCache)
         {
@@ -55,7 +68,7 @@ public class NoIncrementer : DistributedCache<string, CommonNo>, IDistributedCac
                     DateTimeOffset.UtcNow.ToCustomShortDate(),
                     cancellationToken: cancellationToken);
 
-                return new(result);
+                return buildNoAction is null ? new(result) : new(result, buildNoAction);
             }
             catch (Exception ex)
             {

@@ -71,210 +71,7 @@ public class RedisCache :
         _instanceName = _options.InstanceName ?? String.Empty;
     }
 
-    #region HashMany
-
-    public byte[][] GetMany(
-        IEnumerable<string> keys)
-    {
-        keys = Check.NotNull(keys, nameof(keys));
-
-        return this.GetAndRefreshMany(keys, true);
-    }
-
-    public async Task<byte[][]> GetManyAsync(
-        IEnumerable<string> keys,
-        CancellationToken cancellationToken = default)
-    {
-        keys = Check.NotNull(keys, nameof(keys));
-
-        return await this.GetAndRefreshManyAsync(keys, true, cancellationToken);
-    }
-
-    public void RefreshMany(
-        IEnumerable<string> keys)
-    {
-        keys = Check.NotNull(keys, nameof(keys));
-
-        this.GetAndRefreshMany(keys, false);
-    }
-
-    public async Task RefreshManyAsync(
-        IEnumerable<string> keys,
-        CancellationToken cancellationToken = default)
-    {
-        keys = Check.NotNull(keys, nameof(keys));
-
-        await this.GetAndRefreshManyAsync(keys, false, cancellationToken);
-    }
-
-    public void RemoveMany(IEnumerable<string> keys)
-    {
-        keys = Check.NotNull(keys, nameof(keys));
-
-        this.Connect();
-
-        _cache.KeyDelete(keys.Select(key => MakeRedisKey(_instanceName, key)).ToArray());
-    }
-
-    public async Task RemoveManyAsync(IEnumerable<string> keys, CancellationToken cancellationToken = default)
-    {
-        keys = Check.NotNull(keys, nameof(keys));
-
-        cancellationToken.ThrowIfCancellationRequested();
-        await this.ConnectAsync(cancellationToken);
-
-        await _cache.KeyDeleteAsync(keys.Select(key => MakeRedisKey(_instanceName, key)).ToArray());
-    }
-
-    public void SetMany(
-                        IEnumerable<KeyValuePair<string, byte[]>> items,
-        DistributedCacheEntryOptions options)
-    {
-        this.Connect();
-
-        Task.WaitAll(this.PipelineSetMany(items, options));
-    }
-
-    public async Task SetManyAsync(
-        IEnumerable<KeyValuePair<string, byte[]>> items,
-        DistributedCacheEntryOptions options,
-        CancellationToken cancellationToken = default)
-    {
-        cancellationToken.ThrowIfCancellationRequested();
-
-        await this.ConnectAsync(cancellationToken);
-
-        await Task.WhenAll(this.PipelineSetMany(items, options));
-    }
-
-    protected virtual byte[][] GetAndRefreshMany(
-        IEnumerable<string> keys,
-        bool getData)
-    {
-        this.Connect();
-
-        var keyArray = keys.Select(key => MakeRedisKey(_instanceName, key)).ToArray();
-        RedisValue[][] results;
-
-        if (getData)
-        {
-            results = _cache.HashMemberGetMany(keyArray, _absoluteExpirationKey,
-                _slidingExpirationKey, _dataKey);
-        }
-        else
-        {
-            results = _cache.HashMemberGetMany(keyArray, _absoluteExpirationKey,
-                _slidingExpirationKey);
-        }
-
-        Task.WaitAll(this.PipelineRefreshManyAndOutData(keyArray, results, out var bytes));
-
-        return bytes;
-    }
-
-    protected virtual async Task<byte[][]> GetAndRefreshManyAsync(
-        IEnumerable<string> keys,
-        bool getData,
-        CancellationToken cancellationToken = default)
-    {
-        cancellationToken.ThrowIfCancellationRequested();
-
-        await this.ConnectAsync(cancellationToken);
-
-        var keyArray = keys.Select(key => MakeRedisKey(_instanceName, key)).ToArray();
-        RedisValue[][] results;
-
-        if (getData)
-        {
-            results = await _cache.HashMemberGetManyAsync(keyArray, _absoluteExpirationKey,
-                _slidingExpirationKey, _dataKey);
-        }
-        else
-        {
-            results = await _cache.HashMemberGetManyAsync(keyArray, _absoluteExpirationKey,
-                _slidingExpirationKey);
-        }
-
-        await Task.WhenAll(this.PipelineRefreshManyAndOutData(keyArray, results, out var bytes));
-
-        return bytes;
-    }
-
-    protected virtual Task[] PipelineRefreshManyAndOutData(
-        RedisKey[] keys,
-        RedisValue[][] results,
-        out byte[][] bytes)
-    {
-        bytes = new byte[keys.Length][];
-        var tasks = new Task[keys.Length];
-
-        for (var i = 0; i < keys.Length; i++)
-        {
-            if (results[i].Length >= 2)
-            {
-                MapMetadata(results[i], out var absExpr, out var sldExpr);
-
-                if (sldExpr.HasValue)
-                {
-                    TimeSpan? expr;
-
-                    if (absExpr.HasValue)
-                    {
-                        var relExpr = absExpr.Value - DateTimeOffset.UtcNow;
-                        expr = relExpr <= sldExpr.Value ? relExpr : sldExpr;
-                    }
-                    else
-                    {
-                        expr = sldExpr;
-                    }
-
-                    tasks[i] = _cache!.KeyExpireAsync(keys[i], expr);
-                }
-                else
-                {
-                    tasks[i] = Task.CompletedTask;
-                }
-            }
-
-            if (results[i].Length >= 3 && results[i][2].HasValue)
-            {
-                bytes[i] = results[i][2]!;
-            }
-            else
-            {
-                bytes[i] = default!;
-            }
-        }
-
-        return tasks;
-    }
-
-    protected virtual Task[] PipelineSetMany(
-        IEnumerable<KeyValuePair<string, byte[]>> items,
-        DistributedCacheEntryOptions options)
-    {
-        items = Check.NotNull(items, nameof(items));
-        options = Check.NotNull(options, nameof(options));
-
-        var itemArray = items.ToArray();
-        var tasks = new Task[itemArray.Length];
-        var creationTime = DateTimeOffset.UtcNow;
-        var absoluteExpiration = GetAbsoluteExpiration(creationTime, options);
-
-        for (var i = 0; i < itemArray.Length; i++)
-        {
-            var redisKey = MakeRedisKey(_instanceName, itemArray[i].Key);
-            var redisValues = MakeRedisHashSetArgs(itemArray[i].Value, options);
-
-            tasks[i] = _cache!.ScriptEvaluateAsync(_hashSetScript, new RedisKey[] { redisKey }, redisValues);
-        }
-
-        return tasks;
-    }
-
-    #endregion HashMany
-
-    #region HashSingle
+    #region Hash
 
     public byte[]? Get(string key)
     {
@@ -298,54 +95,21 @@ public class RedisCache :
         return await this.GetAndRefreshAsync(key, getData: true, cancellationToken: cancellationToken).ConfigureAwait(false);
     }
 
-    public void Refresh(string key)
+    public byte[][] GetMany(
+        IEnumerable<string> keys)
     {
-        if (key == null)
-        {
-            throw new ArgumentNullException(nameof(key));
-        }
+        keys = Check.NotNull(keys, nameof(keys));
 
-        this.GetAndRefresh(key, getData: false);
+        return this.GetAndRefreshMany(keys, true);
     }
 
-    public async Task RefreshAsync(string key, CancellationToken cancellationToken = default)
+    public async Task<byte[][]> GetManyAsync(
+        IEnumerable<string> keys,
+        CancellationToken cancellationToken = default)
     {
-        if (key == null)
-        {
-            throw new ArgumentNullException(nameof(key));
-        }
+        keys = Check.NotNull(keys, nameof(keys));
 
-        cancellationToken.ThrowIfCancellationRequested();
-
-        await this.GetAndRefreshAsync(key, getData: false, cancellationToken: cancellationToken).ConfigureAwait(false);
-    }
-
-    public void Remove(string key)
-        => this.RemoveWithResult(key);
-
-    public bool RemoveWithResult(string key)
-    {
-        Check.NotNull(key, nameof(key));
-
-        this.Connect();
-
-        var redisKey = MakeRedisKey(_instanceName, key);
-
-        return _cache.KeyDelete(redisKey);
-    }
-
-    public async Task RemoveAsync(string key, CancellationToken cancellationToken = default)
-        => await this.RemoveWithResultAsync(key, cancellationToken);
-
-    public async Task<bool> RemoveWithResultAsync(string key, CancellationToken cancellationToken = default)
-    {
-        Check.NotNull(key, nameof(key));
-
-        await this.ConnectAsync(cancellationToken).ConfigureAwait(false);
-
-        var redisKey = MakeRedisKey(_instanceName, key);
-
-        return await _cache.KeyDeleteAsync(redisKey).ConfigureAwait(false);
+        return await this.GetAndRefreshManyAsync(keys, true, cancellationToken);
     }
 
     public void Set(string key, byte[] value, DistributedCacheEntryOptions options)
@@ -376,6 +140,137 @@ public class RedisCache :
         var redisValues = MakeRedisHashSetArgs(value, options);
 
         await _cache.ScriptEvaluateAsync(_hashSetScript, new RedisKey[] { redisKey }, redisValues).ConfigureAwait(false);
+    }
+
+    public void SetMany(
+                        IEnumerable<KeyValuePair<string, byte[]>> items,
+        DistributedCacheEntryOptions options)
+    {
+        this.Connect();
+
+        Task.WaitAll(this.PipelineSetMany(items, options));
+    }
+
+    public async Task SetManyAsync(
+        IEnumerable<KeyValuePair<string, byte[]>> items,
+        DistributedCacheEntryOptions options,
+        CancellationToken cancellationToken = default)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+
+        await this.ConnectAsync(cancellationToken);
+
+        await Task.WhenAll(this.PipelineSetMany(items, options));
+    }
+
+    public void Refresh(string key)
+    {
+        if (key == null)
+        {
+            throw new ArgumentNullException(nameof(key));
+        }
+
+        this.GetAndRefresh(key, getData: false);
+    }
+
+    public async Task RefreshAsync(string key, CancellationToken cancellationToken = default)
+    {
+        if (key == null)
+        {
+            throw new ArgumentNullException(nameof(key));
+        }
+
+        cancellationToken.ThrowIfCancellationRequested();
+
+        await this.GetAndRefreshAsync(key, getData: false, cancellationToken: cancellationToken).ConfigureAwait(false);
+    }
+
+    public void RefreshMany(
+            IEnumerable<string> keys)
+    {
+        keys = Check.NotNull(keys, nameof(keys));
+
+        this.GetAndRefreshMany(keys, false);
+    }
+
+    public async Task RefreshManyAsync(
+            IEnumerable<string> keys,
+        CancellationToken cancellationToken = default)
+    {
+        keys = Check.NotNull(keys, nameof(keys));
+
+        await this.GetAndRefreshManyAsync(keys, false, cancellationToken);
+    }
+
+    public void Remove(string key)
+            => this.RemoveWithResult(key);
+
+    public bool RemoveWithResult(string key)
+    {
+        Check.NotNull(key, nameof(key));
+
+        this.Connect();
+
+        var redisKey = MakeRedisKey(_instanceName, key);
+
+        return _cache.KeyDelete(redisKey);
+    }
+
+    public async Task RemoveAsync(string key, CancellationToken cancellationToken = default)
+            => await this.RemoveWithResultAsync(key, cancellationToken);
+
+    public async Task<bool> RemoveWithResultAsync(string key, CancellationToken cancellationToken = default)
+    {
+        Check.NotNull(key, nameof(key));
+
+        await this.ConnectAsync(cancellationToken).ConfigureAwait(false);
+
+        var redisKey = MakeRedisKey(_instanceName, key);
+
+        return await _cache.KeyDeleteAsync(redisKey).ConfigureAwait(false);
+    }
+
+    public void RemoveMany(IEnumerable<string> keys)
+    {
+        keys = Check.NotNull(keys, nameof(keys));
+
+        this.Connect();
+
+        _cache.KeyDelete(keys.Select(key => MakeRedisKey(_instanceName, key)).ToArray());
+    }
+
+    public async Task RemoveManyAsync(IEnumerable<string> keys, CancellationToken cancellationToken = default)
+    {
+        keys = Check.NotNull(keys, nameof(keys));
+
+        cancellationToken.ThrowIfCancellationRequested();
+        await this.ConnectAsync(cancellationToken);
+
+        await _cache.KeyDeleteAsync(keys.Select(key => MakeRedisKey(_instanceName, key)).ToArray());
+    }
+
+    public long Increment(string key, string filed, long increment = 1)
+    {
+        Check.NotNullOrWhiteSpace(key, nameof(key));
+
+        this.Connect();
+
+        var result = _cache.HashIncrement(key, filed, increment);
+
+        return result;
+    }
+
+    public async Task<long> IncrementAsync(string key, string filed, long increment = 1, CancellationToken cancellationToken = default)
+    {
+        Check.NotNullOrWhiteSpace(key, nameof(key));
+
+        cancellationToken.ThrowIfCancellationRequested();
+
+        await this.ConnectAsync(cancellationToken);
+
+        var result = await _cache.HashIncrementAsync(key, filed, increment);
+
+        return result;
     }
 
     private byte[]? GetAndRefresh(string key, bool getData)
@@ -515,7 +410,132 @@ public class RedisCache :
         }
     }
 
-    #endregion HashSingle
+    protected virtual byte[][] GetAndRefreshMany(
+        IEnumerable<string> keys,
+        bool getData)
+    {
+        this.Connect();
+
+        var keyArray = keys.Select(key => MakeRedisKey(_instanceName, key)).ToArray();
+        RedisValue[][] results;
+
+        if (getData)
+        {
+            results = _cache.HashMemberGetMany(keyArray, _absoluteExpirationKey,
+                _slidingExpirationKey, _dataKey);
+        }
+        else
+        {
+            results = _cache.HashMemberGetMany(keyArray, _absoluteExpirationKey,
+                _slidingExpirationKey);
+        }
+
+        Task.WaitAll(this.PipelineRefreshManyAndOutData(keyArray, results, out var bytes));
+
+        return bytes;
+    }
+
+    protected virtual async Task<byte[][]> GetAndRefreshManyAsync(
+        IEnumerable<string> keys,
+        bool getData,
+        CancellationToken cancellationToken = default)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+
+        await this.ConnectAsync(cancellationToken);
+
+        var keyArray = keys.Select(key => MakeRedisKey(_instanceName, key)).ToArray();
+        RedisValue[][] results;
+
+        if (getData)
+        {
+            results = await _cache.HashMemberGetManyAsync(keyArray, _absoluteExpirationKey,
+                _slidingExpirationKey, _dataKey);
+        }
+        else
+        {
+            results = await _cache.HashMemberGetManyAsync(keyArray, _absoluteExpirationKey,
+                _slidingExpirationKey);
+        }
+
+        await Task.WhenAll(this.PipelineRefreshManyAndOutData(keyArray, results, out var bytes));
+
+        return bytes;
+    }
+
+    protected virtual Task[] PipelineRefreshManyAndOutData(
+        RedisKey[] keys,
+        RedisValue[][] results,
+        out byte[][] bytes)
+    {
+        bytes = new byte[keys.Length][];
+        var tasks = new Task[keys.Length];
+
+        for (var i = 0; i < keys.Length; i++)
+        {
+            if (results[i].Length >= 2)
+            {
+                MapMetadata(results[i], out var absExpr, out var sldExpr);
+
+                if (sldExpr.HasValue)
+                {
+                    TimeSpan? expr;
+
+                    if (absExpr.HasValue)
+                    {
+                        var relExpr = absExpr.Value - DateTimeOffset.UtcNow;
+                        expr = relExpr <= sldExpr.Value ? relExpr : sldExpr;
+                    }
+                    else
+                    {
+                        expr = sldExpr;
+                    }
+
+                    tasks[i] = _cache!.KeyExpireAsync(keys[i], expr);
+                }
+                else
+                {
+                    tasks[i] = Task.CompletedTask;
+                }
+            }
+
+            if (results[i].Length >= 3 && results[i][2].HasValue)
+            {
+                bytes[i] = results[i][2]!;
+            }
+            else
+            {
+                bytes[i] = default!;
+            }
+        }
+
+        return tasks;
+    }
+
+    protected virtual Task[] PipelineSetMany(
+        IEnumerable<KeyValuePair<string, byte[]>> items,
+        DistributedCacheEntryOptions options)
+    {
+        items = Check.NotNull(items, nameof(items));
+        options = Check.NotNull(options, nameof(options));
+
+        var itemArray = items.ToArray();
+        var tasks = new Task[itemArray.Length];
+        var creationTime = DateTimeOffset.UtcNow;
+        var absoluteExpiration = GetAbsoluteExpiration(creationTime, options);
+
+        for (var i = 0; i < itemArray.Length; i++)
+        {
+            var redisKey = MakeRedisKey(_instanceName, itemArray[i].Key);
+            var redisValues = MakeRedisHashSetArgs(itemArray[i].Value, options);
+
+            tasks[i] = _cache!.ScriptEvaluateAsync(_hashSetScript, new RedisKey[] { redisKey }, redisValues);
+        }
+
+        return tasks;
+    }
+
+    #endregion Hash
 
     #region SortedSet
 
@@ -723,19 +743,6 @@ public class RedisCache :
     }
 
     #endregion
-
-    public async Task<long> IncrementAsync(string key, string filed, long increment = 1, CancellationToken cancellationToken = default)
-    {
-        Check.NotNullOrWhiteSpace(key, nameof(key));
-
-        cancellationToken.ThrowIfCancellationRequested();
-
-        await this.ConnectAsync(cancellationToken);
-
-        var result = await _cache.HashIncrementAsync(key, filed, increment);
-
-        return result;
-    }
 
     #region Connect
 
