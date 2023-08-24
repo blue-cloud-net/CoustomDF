@@ -1,4 +1,3 @@
-using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
 
 using FantasySky.CustomDF.Domain.Entities;
@@ -29,6 +28,21 @@ public abstract class RepositoryBase<TEntity> : IBasicRepository<TEntity>
         this.GuidGenerator = _serviceProvider.GetRequiredService<IGuidGenerator>();
     }
 
+    public abstract Task<TEntity> InsertAsync(TEntity entity, bool autoSave = false, CancellationToken cancellationToken = default);
+
+    public virtual async Task InsertManyAsync(IEnumerable<TEntity> entities, bool autoSave = false, CancellationToken cancellationToken = default)
+    {
+        foreach (var entity in entities)
+        {
+            await this.InsertAsync(entity, cancellationToken: cancellationToken);
+        }
+
+        if (autoSave)
+        {
+            await this.SaveChangesAsync(cancellationToken);
+        }
+    }
+
     public abstract Task DeleteAsync(TEntity entity, bool autoSave = false, CancellationToken cancellationToken = default);
 
     public virtual async Task DeleteManyAsync(IEnumerable<TEntity> entities, bool autoSave = false, CancellationToken cancellationToken = default)
@@ -36,6 +50,25 @@ public abstract class RepositoryBase<TEntity> : IBasicRepository<TEntity>
         foreach (var entity in entities)
         {
             await this.DeleteAsync(entity, cancellationToken: cancellationToken);
+        }
+
+        if (autoSave)
+        {
+            await this.SaveChangesAsync(cancellationToken);
+        }
+    }
+
+    public abstract Task DeleteAsync(Expression<Func<TEntity, bool>> predicate, bool autoSave = false, CancellationToken cancellationToken = default);
+
+    public abstract Task DeleteDirectAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken = default);
+
+    public abstract Task<TEntity> UpdateAsync(TEntity entity, bool autoSave = false, CancellationToken cancellationToken = default);
+
+    public virtual async Task UpdateManyAsync(IEnumerable<TEntity> entities, bool autoSave = false, CancellationToken cancellationToken = default)
+    {
+        foreach (var entity in entities)
+        {
+            await this.UpdateAsync(entity, cancellationToken: cancellationToken);
         }
 
         if (autoSave)
@@ -61,36 +94,6 @@ public abstract class RepositoryBase<TEntity> : IBasicRepository<TEntity>
     public abstract Task<PagedList<TEntity>> GetPagedListAsync(Page page, bool includeDetails = false, CancellationToken cancellationToken = default);
 
     public abstract Task<IQueryable<TEntity>> GetQueryableAsync(CancellationToken cancellationToken = default);
-
-    public abstract Task<TEntity> InsertAsync([NotNull] TEntity entity, bool autoSave = false, CancellationToken cancellationToken = default);
-
-    public virtual async Task InsertManyAsync([NotNull] IEnumerable<TEntity> entities, bool autoSave = false, CancellationToken cancellationToken = default)
-    {
-        foreach (var entity in entities)
-        {
-            await this.InsertAsync(entity, cancellationToken: cancellationToken);
-        }
-
-        if (autoSave)
-        {
-            await this.SaveChangesAsync(cancellationToken);
-        }
-    }
-
-    public abstract Task<TEntity> UpdateAsync([NotNull] TEntity entity, bool autoSave = false, CancellationToken cancellationToken = default);
-
-    public virtual async Task UpdateManyAsync([NotNull] IEnumerable<TEntity> entities, bool autoSave = false, CancellationToken cancellationToken = default)
-    {
-        foreach (var entity in entities)
-        {
-            await this.UpdateAsync(entity, cancellationToken: cancellationToken);
-        }
-
-        if (autoSave)
-        {
-            await this.SaveChangesAsync(cancellationToken);
-        }
-    }
 
     public virtual Task<IQueryable<TEntity>> WithDetailsAsync(CancellationToken cancellationToken = default)
     {

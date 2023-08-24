@@ -2,14 +2,18 @@
 
 	<Import Project="..\..\..\common.props" />
 
+	<PropertyGroup>
+		<PackageId>FantasySky.CustomDF.EntityFrameworkCore</PackageId>
+	</PropertyGroup>
+
 	<ItemGroup>
-	  <ProjectReference Include="..\..\FantasySky.CustomDF.Core\FantasySky.CustomDF.Core.csproj" />
-	  <ProjectReference Include="..\..\FantasySky.CustomDF.Ddd.Domain\FantasySky.CustomDF.Ddd.Domain.csproj" />
+		<ProjectReference Include="..\..\FantasySky.CustomDF.Core\FantasySky.CustomDF.Core.csproj" />
+		<ProjectReference Include="..\..\FantasySky.CustomDF.Ddd.Domain\FantasySky.CustomDF.Ddd.Domain.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="$(MicrosoftEntityFrameworkCorePackageVersion)" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="$(MicrosoftEntityFrameworkCorePackageVersion)" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.7" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="7.0.7" />
 	</ItemGroup>
 
 </Project>

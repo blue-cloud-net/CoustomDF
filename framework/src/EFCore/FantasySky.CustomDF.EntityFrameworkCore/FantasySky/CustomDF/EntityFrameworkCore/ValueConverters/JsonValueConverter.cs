@@ -6,8 +6,9 @@ namespace FantasySky.CustomDF.EntityFrameworkCore.ValueConverters;
 
 public class JsonValueConverter<TPropertyType> : ValueConverter<TPropertyType, string>
 {
-    private static readonly JsonSerializerOptions _deserializeOptions = new()
+    private static readonly JsonSerializerOptions _deserializeOptions = new(JsonSerializerDefaults.Web)
     {
+        DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingDefault,
         Converters =
         {
             // TODO 还没看完，没理解意义

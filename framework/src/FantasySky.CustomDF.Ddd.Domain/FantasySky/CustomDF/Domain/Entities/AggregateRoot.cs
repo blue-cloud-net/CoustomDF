@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+
 using FantasySky.CustomDF.Domain.Entities.Auditing;
 
 namespace FantasySky.CustomDF.Domain.Entities;
@@ -32,5 +34,6 @@ public abstract class AggregateRoot<TKey> : BasicAggregateRoot<TKey>,
     }
 
     [DisableAuditing]
+    [ConcurrencyCheck]
     public virtual string ConcurrencyStamp { get; set; }
 }

@@ -2,9 +2,13 @@
 
 	<Import Project="..\..\..\common.props" />
 
+	<PropertyGroup>
+		<PackageId>FantasySky.CustomDF.DistributedLocking.Dapr</PackageId>
+	</PropertyGroup>
+
 	<ItemGroup>
-	  <ProjectReference Include="..\..\Dapr\FantasySky.CustomDF.Dapr\FantasySky.CustomDF.Dapr.csproj" />
-	  <ProjectReference Include="..\FantasySky.CustomDF.DistributedLocking\FantasySky.CustomDF.DistributedLocking.csproj" />
+		<ProjectReference Include="..\..\Dapr\FantasySky.CustomDF.Dapr\FantasySky.CustomDF.Dapr.csproj" />
+		<ProjectReference Include="..\FantasySky.CustomDF.DistributedLocking\FantasySky.CustomDF.DistributedLocking.csproj" />
 	</ItemGroup>
 
 </Project>

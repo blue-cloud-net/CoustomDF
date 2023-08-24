@@ -2,8 +2,12 @@
 
 	<Import Project="..\..\..\common.props" />
 
+	<PropertyGroup>
+		<PackageId>FantasySky.CustomDF.DistributedLocking.Medallion</PackageId>
+	</PropertyGroup>
+
 	<ItemGroup>
-		<PackageReference Include="DistributedLock.Core" Version="1.0.4" />
+		<PackageReference Include="DistributedLock.Core" Version="1.0.5" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -2,9 +2,13 @@
 
 	<Import Project="..\..\..\common.props" />
 
+	<PropertyGroup>
+		<PackageId>FantasySky.CustomDF.EventBus</PackageId>
+	</PropertyGroup>
+
 	<ItemGroup>
-	  <ProjectReference Include="..\..\FantasySky.CustomDF.Core\FantasySky.CustomDF.Core.csproj" />
-	  <ProjectReference Include="..\FantasySky.CustomDF.EventBus.Abstractions\FantasySky.CustomDF.EventBus.Abstractions.csproj" />
+		<ProjectReference Include="..\..\FantasySky.CustomDF.Core\FantasySky.CustomDF.Core.csproj" />
+		<ProjectReference Include="..\FantasySky.CustomDF.EventBus.Abstractions\FantasySky.CustomDF.EventBus.Abstractions.csproj" />
 	</ItemGroup>
 
 </Project>

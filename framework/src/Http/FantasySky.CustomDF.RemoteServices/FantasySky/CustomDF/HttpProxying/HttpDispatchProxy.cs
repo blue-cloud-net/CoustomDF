@@ -1,3 +1,5 @@
+using System.Reflection;
+
 namespace FantasySky.CustomDF.HttpProxying;
 
 public class HttpDispatchProxy

@@ -115,7 +115,7 @@ public static class EntityHelper
 
     public static bool HasDefaultKeys([NotNull] IEntity entity)
     {
-        Check.IsNotNull(entity, nameof(entity));
+        Check.NotNull(entity, nameof(entity));
 
         foreach (var key in entity.GetKeys())
         {

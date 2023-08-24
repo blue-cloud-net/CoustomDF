@@ -2,9 +2,13 @@
 
 	<Import Project="..\..\..\common.props" />
 
+	<PropertyGroup>
+		<PackageId>FantasySky.CustomDF.RemoteServices</PackageId>
+	</PropertyGroup>
+
 	<ItemGroup>
-	  <ProjectReference Include="..\..\FantasySky.CustomDF.Core\FantasySky.CustomDF.Core.csproj" />
-	  <ProjectReference Include="..\FantasySky.CustomDF.Http.Client\FantasySky.CustomDF.Http.Client.csproj" />
+		<ProjectReference Include="..\..\FantasySky.CustomDF.Core\FantasySky.CustomDF.Core.csproj" />
+		<ProjectReference Include="..\FantasySky.CustomDF.Http.Client\FantasySky.CustomDF.Http.Client.csproj" />
 	</ItemGroup>
 
 </Project>

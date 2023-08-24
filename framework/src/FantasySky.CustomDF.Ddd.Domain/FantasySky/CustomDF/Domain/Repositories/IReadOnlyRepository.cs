@@ -92,4 +92,8 @@ public interface IReadOnlyRepository<TEntity, TKey> : IReadOnlyRepository<TEntit
     /// <param name="cancellationToken">A <see cref="T:System.Threading.CancellationToken" /> to observe while waiting for the task to complete.</param>
     /// <returns>Entity</returns>
     Task<TEntity> GetAsync(TKey id, bool includeDetails = true, CancellationToken cancellationToken = default);
+
+    Task<TEntity?> FindAsNoTrackingAsync(TKey id, bool includeDetails = true, CancellationToken cancellationToken = default);
+
+    Task<TEntity> GetAsNoTrackingAsync(TKey id, bool includeDetails = true, CancellationToken cancellationToken = default);
 }

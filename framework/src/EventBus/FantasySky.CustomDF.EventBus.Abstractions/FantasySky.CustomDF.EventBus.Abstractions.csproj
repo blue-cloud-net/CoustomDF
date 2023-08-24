@@ -2,4 +2,8 @@
 
 	<Import Project="..\..\..\common.props" />
 
+	<PropertyGroup>
+		<PackageId>FantasySky.CustomDF.EventBus.Abstractions</PackageId>
+	</PropertyGroup>
+
 </Project>

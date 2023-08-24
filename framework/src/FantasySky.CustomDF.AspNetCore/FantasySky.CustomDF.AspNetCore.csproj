@@ -2,21 +2,22 @@
 
 	<Import Project="..\..\common.props" />
 
+	<PropertyGroup>
+		<PackageId>FantasySky.CustomDF.AspNetCore</PackageId>
+	</PropertyGroup>
+
 	<ItemGroup>
 		<FrameworkReference Include="Microsoft.AspNetCore.App" />
 	</ItemGroup>
-	
+
 	<ItemGroup>
-	  <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="$(MicrosoftAspNetCorePackageVersion)" />
-	  <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+		<PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.7" />
+		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
 	</ItemGroup>
-	
+
 	<ItemGroup>
-	  <ProjectReference Include="..\FantasySky.CustomDF.Core\FantasySky.CustomDF.Core.csproj" />
-	</ItemGroup>
-	
-	<ItemGroup>
-	  <Folder Include="FantasySky\CustomDF\" />
+		<ProjectReference Include="..\BackgroundJobs\FantasySky.CustomDF.BackgroundJobs\FantasySky.CustomDF.BackgroundJobs.csproj" />
+		<ProjectReference Include="..\FantasySky.CustomDF.Core\FantasySky.CustomDF.Core.csproj" />
 	</ItemGroup>
 
 </Project>

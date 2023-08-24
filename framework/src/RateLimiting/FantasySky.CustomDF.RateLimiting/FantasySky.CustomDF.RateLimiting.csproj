@@ -2,12 +2,16 @@
 
 	<Import Project="..\..\..\common.props" />
 
+	<PropertyGroup>
+		<PackageId>FantasySky.CustomDF.RateLimiting</PackageId>
+	</PropertyGroup>
+
 	<ItemGroup>
-	  <PackageReference Include="System.Threading.RateLimiting" Version="7.0.0" />
+		<PackageReference Include="System.Threading.RateLimiting" Version="7.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\..\Caching\FantasySky.CustomDF.Caching\FantasySky.CustomDF.Caching.csproj" />
+		<ProjectReference Include="..\..\Caching\FantasySky.CustomDF.Caching\FantasySky.CustomDF.Caching.csproj" />
 	</ItemGroup>
 
 </Project>

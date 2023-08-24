@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace FantasySky.CustomDF.EntityFrameworkCore.ValueConverters;
 
-public class EnumerableToStringValueConverter<T> : ValueConverter<IEnumerable<T>, string>
+public class EnumerableToStringValueConverter<T> : ValueConverter<IEnumerable<T>?, string?>
 {
     public EnumerableToStringValueConverter(
         Func<T, string> objectSerialize,
@@ -12,16 +12,16 @@ public class EnumerableToStringValueConverter<T> : ValueConverter<IEnumerable<T>
             d => SerializeObject(d, objectSerialize, split),
             s => DeserializeObject(s, objectDeserialize, split))
     {
-        Check.IsNotNullOrWhiteSpace(split, nameof(split));
+        Check.NotNullOrWhiteSpace(split, nameof(split));
     }
 
-    private static string SerializeObject(IEnumerable<T> d, Func<T, string> objectSerialize, string split)
+    private static string? SerializeObject(IEnumerable<T>? d, Func<T, string> objectSerialize, string split)
     {
-        return d.Select(objectSerialize).JoinAsString(split);
+        return d?.Select(objectSerialize)?.JoinAsString(split);
     }
 
-    private static IEnumerable<T> DeserializeObject(string s, Func<string, T> objectDeserialize, string split)
+    private static IEnumerable<T>? DeserializeObject(string? s, Func<string, T> objectDeserialize, string split)
     {
-        return s.Split(split).Select(objectDeserialize).ToList();
+        return s?.Split(split)?.Select(objectDeserialize)?.ToList();
     }
 }

@@ -12,11 +12,12 @@ public class ArrayToStringValueConverter<T> : ValueConverter<T[], string>
             d => SerializeObject(d, objectSerialize, split),
             s => DeserializeObject(s, objectDeserialize, split))
     {
-        Check.IsNotNullOrWhiteSpace(split, nameof(split));
+        Check.NotNullOrWhiteSpace(split, nameof(split));
     }
 
-    private static string SerializeObject(T[] d, Func<T, string> objectSerialize, string split)
+    private static string SerializeObject(T[] d, Func<T, string> objectSerialize,string split)
     {
+
         return d.Select(objectSerialize).JoinAsString(split);
     }
 

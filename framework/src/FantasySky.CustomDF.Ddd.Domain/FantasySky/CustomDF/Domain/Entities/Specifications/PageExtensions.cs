@@ -11,7 +11,7 @@ public static class PageExtensions
     /// <returns></returns>
     public static IQueryable<T> PageByIf<T>(this IQueryable<T> query, Page? page)
     {
-        Check.IsNotNull(query, nameof(query));
+        Check.NotNull(query, nameof(query));
 
         var temp = query;
 

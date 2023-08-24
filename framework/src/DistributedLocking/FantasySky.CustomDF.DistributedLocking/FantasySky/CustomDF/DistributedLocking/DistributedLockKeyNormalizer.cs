@@ -1,7 +1,11 @@
+using FantasySky.CustomDF.DependencyInjection;
+
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
 namespace FantasySky.CustomDF.DistributedLocking;
 
+[Dependency(typeof(IDistributedLockKeyNormalizer), ServiceLifetime.Transient)]
 public class DistributedLockKeyNormalizer : IDistributedLockKeyNormalizer
 {
     protected DistributedLockOptions Options { get; }

@@ -20,7 +20,7 @@ public class LocalDistributedLock : IDistributedLock
 
     public async Task<IDistributedLockHandle?> TryAcquireAsync(string key, TimeSpan? timeout = null, CancellationToken cancellationToken = default)
     {
-        Check.IsNotNullOrWhiteSpace(key, nameof(key));
+        Check.NotNullOrWhiteSpace(key, nameof(key));
 
         string normalizeKey = _distributedLockKeyNormalizer.NormalizeKey(key);
 

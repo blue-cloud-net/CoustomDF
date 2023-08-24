@@ -9,4 +9,5 @@ namespace FantasySky.CstomDF.EventBus;
 /// </summary>
 public interface IEventHandler
 {
+
 }

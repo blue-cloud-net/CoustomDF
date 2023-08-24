@@ -2,4 +2,8 @@
 
 	<Import Project="..\..\..\common.props" />
 
+	<PropertyGroup>
+		<PackageId>FantasySky.CustomDF.DistributedLocking.Abstractions</PackageId>
+	</PropertyGroup>
+
 </Project>

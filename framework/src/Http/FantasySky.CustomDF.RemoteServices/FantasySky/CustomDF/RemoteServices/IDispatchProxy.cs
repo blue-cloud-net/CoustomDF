@@ -5,4 +5,5 @@ namespace FantasySky.CustomDF.RemoteServices;
 /// </summary>
 public interface IDispatchProxy
 {
+
 }

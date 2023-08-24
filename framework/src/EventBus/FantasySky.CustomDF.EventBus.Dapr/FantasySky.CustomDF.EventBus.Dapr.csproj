@@ -2,8 +2,12 @@
 
 	<Import Project="..\..\..\common.props" />
 
-  <ItemGroup>
-    <ProjectReference Include="..\FantasySky.CustomDF.EventBus\FantasySky.CustomDF.EventBus.csproj" />
-  </ItemGroup>
+	<PropertyGroup>
+		<PackageId>FantasySky.CustomDF.EventBus.Dapr</PackageId>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\FantasySky.CustomDF.EventBus\FantasySky.CustomDF.EventBus.csproj" />
+	</ItemGroup>
 
 </Project>

@@ -1,4 +1,3 @@
-using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
 
 using FantasySky.CustomDF.Domain.Entities.Specifications;
@@ -21,9 +20,121 @@ public class EfCoreRepository<TDbContext, TEntity> : RepositoryBase<TEntity>, IE
 
     public IDbContextProvider<TDbContext> DbContextProvider { get; }
 
-    public override Task DeleteAsync(TEntity entity, bool autoSave = false, CancellationToken cancellationToken = default)
+    public override async Task<TEntity> InsertAsync(TEntity entity, bool autoSave = false, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        this.CheckAndSetId(entity);
+
+        var dbContext = await this.GetDbContextAsync();
+
+        var savedEntity = (await dbContext.Set<TEntity>().AddAsync(entity, cancellationToken)).Entity;
+
+        if (autoSave)
+        {
+            await dbContext.SaveChangesAsync(cancellationToken);
+        }
+
+        return savedEntity;
+    }
+
+    public override async Task InsertManyAsync(IEnumerable<TEntity> entities, bool autoSave = false, CancellationToken cancellationToken = default)
+    {
+        var entityArray = entities.ToArray();
+
+        foreach (var entity in entityArray)
+        {
+            this.CheckAndSetId(entity);
+        }
+
+        var dbContext = await this.GetDbContextAsync();
+
+        await dbContext.Set<TEntity>().AddRangeAsync(entityArray, cancellationToken);
+
+        if (autoSave)
+        {
+            await dbContext.SaveChangesAsync(cancellationToken);
+        }
+    }
+
+    public override async Task<bool> DeleteAsync(TEntity entity, bool autoSave = false, CancellationToken cancellationToken = default)
+    {
+        var dbContext = await this.GetDbContextAsync();
+
+        dbContext.Set<TEntity>().Remove(entity);
+
+        if (autoSave)
+        {
+            var deleteCount = await dbContext.SaveChangesAsync(cancellationToken);
+
+            return deleteCount > 0;
+        }
+
+        return true;
+    }
+
+    public override async Task<int> DeleteManyAsync(IEnumerable<TEntity> entities, bool autoSave = false, CancellationToken cancellationToken = default)
+    {
+        var dbContext = await this.GetDbContextAsync();
+
+        dbContext.RemoveRange(entities);
+
+        if (autoSave)
+        {
+            return await dbContext.SaveChangesAsync(cancellationToken);
+        }
+
+        return 0;
+    }
+
+    public override async Task DeleteAsync(Expression<Func<TEntity, bool>> predicate, bool autoSave = false, CancellationToken cancellationToken = default)
+    {
+        var dbContext = await this.GetDbContextAsync();
+        var dbSet = dbContext.Set<TEntity>();
+
+        var entities = await dbSet
+            .Where(predicate)
+            .ToListAsync(cancellationToken);
+
+        await this.DeleteManyAsync(entities, autoSave, cancellationToken);
+
+        if (autoSave)
+        {
+            await dbContext.SaveChangesAsync(cancellationToken);
+        }
+    }
+
+    public override async Task DeleteDirectAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken = default)
+    {
+        var dbContext = await this.GetDbContextAsync();
+        var dbSet = dbContext.Set<TEntity>();
+        await dbSet.Where(predicate).ExecuteDeleteAsync(cancellationToken);
+    }
+
+    public override async Task<TEntity> UpdateAsync(TEntity entity, bool autoSave = false, CancellationToken cancellationToken = default)
+    {
+        var dbContext = await this.GetDbContextAsync();
+
+        dbContext.Attach(entity);
+
+        var updatedEntity = dbContext.Update(entity).Entity;
+
+        if (autoSave)
+        {
+            await dbContext.SaveChangesAsync(cancellationToken);
+        }
+
+        return updatedEntity;
+    }
+
+    public override async Task UpdateManyAsync(IEnumerable<TEntity> entities, bool autoSave = false, CancellationToken cancellationToken = default)
+    {
+        var dbContext = await this.GetDbContextAsync();
+
+        dbContext.Set<TEntity>().UpdateRange(entities);
+
+        if (autoSave)
+        {
+            await dbContext.SaveChangesAsync(cancellationToken);
+        }
     }
 
     public override async Task<bool> AnyAsync(CancellationToken cancellationToken = default)
@@ -45,13 +156,13 @@ public class EfCoreRepository<TDbContext, TEntity> : RepositoryBase<TEntity>, IE
 
     public override async Task<List<TEntity>> GetListAsync(bool includeDetails = false, CancellationToken cancellationToken = default)
         => includeDetails
-            ? await (await this.WithDetailsAsync()).ToListAsync(cancellationToken)
-            : await (await this.GetDbSetAsync()).ToListAsync(cancellationToken);
+            ? await (await this.WithDetailsAsync()).AsNoTracking().ToListAsync(cancellationToken)
+            : await (await this.GetDbSetAsync()).AsNoTracking().ToListAsync(cancellationToken);
 
     public override async Task<List<TEntity>> GetListAsync(Expression<Func<TEntity, bool>> predicate, bool includeDetails = false, CancellationToken cancellationToken = default)
         => includeDetails
-            ? await (await this.WithDetailsAsync()).Where(predicate).ToListAsync(cancellationToken)
-            : await (await this.GetDbSetAsync()).Where(predicate).ToListAsync(cancellationToken);
+            ? await (await this.WithDetailsAsync()).AsNoTracking().Where(predicate).ToListAsync(cancellationToken)
+            : await (await this.GetDbSetAsync()).AsNoTracking().Where(predicate).ToListAsync(cancellationToken);
 
     public override async Task<PagedList<TEntity>> GetPagedListAsync(Page page, bool includeDetails = false, CancellationToken cancellationToken = default)
     {
@@ -59,43 +170,14 @@ public class EfCoreRepository<TDbContext, TEntity> : RepositoryBase<TEntity>, IE
             ? await this.WithDetailsAsync()
             : await this.GetDbSetAsync();
 
-        return await queryable.ToPageListAsync(page, cancellationToken);
+        return await queryable.AsNoTracking().ToPageListAsync(page, cancellationToken);
     }
 
     public override async Task<IQueryable<TEntity>> GetQueryableAsync(CancellationToken cancellationToken = default)
         => (await this.GetDbSetAsync()).AsQueryable();
 
-    public override async Task<TEntity> InsertAsync([NotNull] TEntity entity, bool autoSave = false, CancellationToken cancellationToken = default)
-    {
-        this.CheckAndSetId(entity);
-
-        var dbContext = await this.GetDbContextAsync();
-
-        var savedEntity = (await dbContext.Set<TEntity>().AddAsync(entity, cancellationToken)).Entity;
-
-        if (autoSave)
-        {
-            await dbContext.SaveChangesAsync(cancellationToken);
-        }
-
-        return savedEntity;
-    }
-
-    public override async Task<TEntity> UpdateAsync([NotNull] TEntity entity, bool autoSave = false, CancellationToken cancellationToken = default)
-    {
-        var dbContext = await this.GetDbContextAsync();
-
-        dbContext.Attach(entity);
-
-        var updatedEntity = dbContext.Update(entity).Entity;
-
-        if (autoSave)
-        {
-            await dbContext.SaveChangesAsync(cancellationToken);
-        }
-
-        return updatedEntity;
-    }
+    protected override async Task SaveChangesAsync(CancellationToken cancellationToken)
+        => await (await this.GetDbContextAsync()).SaveChangesAsync(cancellationToken);
 
     async Task<DbContext> IEfCoreRepository<TEntity>.GetDbContextAsync()
     {
@@ -161,22 +243,22 @@ public class EfCoreRepository<TDbContext, TEntity, TKey> :
     {
     }
 
-    public async Task DeleteAsync(TKey id, bool autoSave = false, CancellationToken cancellationToken = default)
+    public async Task<bool> DeleteAsync(TKey id, bool autoSave = false, CancellationToken cancellationToken = default)
     {
         var entity = await this.FindAsync(id, cancellationToken: cancellationToken);
         if (entity == null)
         {
-            return;
+            return false;
         }
 
-        await this.DeleteAsync(entity, autoSave, cancellationToken);
+        return await this.DeleteAsync(entity, autoSave, cancellationToken);
     }
 
-    public async Task DeleteManyAsync([NotNull] IEnumerable<TKey> ids, bool autoSave = false, CancellationToken cancellationToken = default)
+    public async Task<int> DeleteManyAsync(IEnumerable<TKey> ids, bool autoSave = false, CancellationToken cancellationToken = default)
     {
         var entities = await (await this.GetDbSetAsync()).Where(x => ids.Contains(x.Id)).ToListAsync(cancellationToken);
 
-        await this.DeleteManyAsync(entities, autoSave, cancellationToken);
+        return await this.DeleteManyAsync(entities, autoSave, cancellationToken);
     }
 
     public async Task<TEntity?> FindAsync(TKey id, bool includeDetails = true, CancellationToken cancellationToken = default)
@@ -186,11 +268,16 @@ public class EfCoreRepository<TDbContext, TEntity, TKey> :
             : await (await this.GetDbSetAsync()).FindAsync(new object[] { id }, cancellationToken);
     }
 
-    public async Task<TEntity> GetAsync(TKey id, bool includeDetails = true, CancellationToken cancellationToken = default)
+    public async Task<TEntity?> FindAsNoTrackingAsync(TKey id, bool includeDetails = true, CancellationToken cancellationToken = default)
     {
-        var entity = await this.FindAsync(id, includeDetails, cancellationToken)
-            ?? throw new EntityNotFoundException(typeof(TEntity), id);
-
-        return entity;
+        return includeDetails
+            ? await (await this.WithDetailsAsync()).OrderBy(e => e.Id).AsNoTracking().FirstOrDefaultAsync(e => e.Id.Equals(id), cancellationToken)
+            : await (await this.GetDbSetAsync()).AsNoTracking().FirstOrDefaultAsync(e => e.Id.Equals(id), cancellationToken);
     }
+
+    public async Task<TEntity> GetAsync(TKey id, bool includeDetails = true, CancellationToken cancellationToken = default)
+        => await this.FindAsync(id, includeDetails, cancellationToken) ?? throw new EntityNotFoundException(typeof(TEntity), id);
+
+    public async Task<TEntity> GetAsNoTrackingAsync(TKey id, bool includeDetails = true, CancellationToken cancellationToken = default)
+        => await this.FindAsNoTrackingAsync(id, includeDetails, cancellationToken) ?? throw new EntityNotFoundException(typeof(TEntity), id);
 }

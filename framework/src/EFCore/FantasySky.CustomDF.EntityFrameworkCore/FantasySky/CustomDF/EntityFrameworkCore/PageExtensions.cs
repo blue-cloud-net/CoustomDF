@@ -14,7 +14,7 @@ public static class PageQueryableExtensions
     /// <returns></returns>
     public static async Task<PagedList<TEntity>> ToPageListAsync<TEntity>(this IQueryable<TEntity> query, Page page, CancellationToken cancellationToken = default)
     {
-        Check.IsNotNull(query, nameof(query));
+        Check.NotNull(query, nameof(query));
 
         var sumCount = await query.LongCountAsync();
 

@@ -2,9 +2,11 @@ using FantasySky.CustomDF.DependencyInjection;
 
 using Medallion.Threading;
 
+using Microsoft.Extensions.DependencyInjection;
+
 namespace FantasySky.CustomDF.DistributedLocking;
 
-[Dependency(typeof(IDistributedLock), ReplaceServices = true)]
+[Dependency(typeof(IDistributedLock), ServiceLifetime.Transient, ReplaceServices = true)]
 public class DistributedLock : IDistributedLock
 {
     public DistributedLock(
@@ -23,7 +25,7 @@ public class DistributedLock : IDistributedLock
         string key, TimeSpan? timeout = null,
         CancellationToken cancellationToken = default)
     {
-        Check.IsNotNullOrWhiteSpace(key, nameof(key));
+        Check.NotNullOrWhiteSpace(key, nameof(key));
 
         var normalizeKey = this.DistributedLockKeyNormalizer.NormalizeKey(key);
 

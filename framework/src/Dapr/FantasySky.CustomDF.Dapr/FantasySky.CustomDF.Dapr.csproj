@@ -2,9 +2,13 @@
 
 	<Import Project="..\..\..\common.props" />
 
+	<PropertyGroup>
+		<PackageId>FantasySky.CustomDF.Dapr</PackageId>
+	</PropertyGroup>
+
 	<ItemGroup>
-		<PackageReference Include="Dapr.Client" Version="1.10.0" />
-		<PackageReference Include="Microsoft.Extensions.Options" Version="7.0.0" />
+		<PackageReference Include="Dapr.Client" Version="1.11.0" />
+		<PackageReference Include="Microsoft.Extensions.Options" Version="7.0.1" />
 	</ItemGroup>
 
 	<ItemGroup>
