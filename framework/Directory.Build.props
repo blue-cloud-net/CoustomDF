@@ -1,6 +1,6 @@
 <Project>
 
-  <PropertyGroup>
+	<PropertyGroup>
 		<!--项目信息-->
 		<Version>1.0.0</Version>
 		<Authors>shl</Authors>
@@ -16,7 +16,7 @@
 		<PackageOutputPath>$(SolutionDir)\.nupkgs</PackageOutputPath>
 	</PropertyGroup>
 
-  <PropertyGroup>
+	<PropertyGroup>
 		<LangVersion>latest</LangVersion>
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
@@ -24,8 +24,8 @@
 		<AccelerateBuildsInVisualStudio>true</AccelerateBuildsInVisualStudio>
 	</PropertyGroup>
 
-  <PropertyGroup>
-    
+	<PropertyGroup>
+
 		<!-- All Microsoft AspNetCore packages -->
 		<MicrosoftAspNetCorePackageVersion>7.0.0</MicrosoftAspNetCorePackageVersion>
 
@@ -50,16 +50,16 @@
 		<!-- NUnit.Analyzers https://www.nuget.org/packages/coverlet.collector -->
 		<coverletcollectorPackageVersion>6.0.0</coverletcollectorPackageVersion>
 
-  </PropertyGroup>
+	</PropertyGroup>
 
-  <PropertyGroup Condition="$(MSBuildProjectFullPath.Contains('test')) and ($(MSBuildProjectName.EndsWith('.Tests')) or $(MSBuildProjectName.EndsWith('.TestBase')))">
-    <TargetFramework>net7.0</TargetFramework>
-    <!-- 测试项目不打包 -->
-    <IsTestProject>true</IsTestProject>
-    <IsPackable>false</IsPackable>
-  </PropertyGroup>
+	<PropertyGroup Condition="$(MSBuildProjectFullPath.Contains('test')) and ($(MSBuildProjectName.EndsWith('.Tests')) or $(MSBuildProjectName.EndsWith('.UnitTests')) or $(MSBuildProjectName.EndsWith('.TestBase')))">
+		<TargetFramework>net7.0</TargetFramework>
+		<!-- 测试项目不打包 -->
+		<IsTestProject>true</IsTestProject>
+		<IsPackable>false</IsPackable>
+	</PropertyGroup>
 
-	<ItemGroup Condition="'$(IsTestProject)' == 'true'">
+	<ItemGroup Condition="$(MSBuildProjectFullPath.Contains('test')) and ($(MSBuildProjectName.EndsWith('.Tests')) or $(MSBuildProjectName.EndsWith('.UnitTests')) or $(MSBuildProjectName.EndsWith('.TestBase')))">
 		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="$(MicrosoftNETTestSdkPackageVersion)" />
 		<PackageReference Include="NUnit" Version="$(NUnitPackageVersion)" />
 		<PackageReference Include="NUnit3TestAdapter" Version="$(NUnit3TestAdapterPackageVersion)" />
