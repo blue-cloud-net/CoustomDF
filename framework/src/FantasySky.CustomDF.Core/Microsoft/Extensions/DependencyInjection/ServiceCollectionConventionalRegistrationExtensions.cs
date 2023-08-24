@@ -1,5 +1,6 @@
 using System.Reflection;
 
+using FantasySky.CustomDF;
 using FantasySky.CustomDF.DependencyInjection;
 using FantasySky.CustomDF.Exceptions;
 
@@ -19,7 +20,7 @@ public static class ServiceCollectionConventionalRegistrationExtensions
 
     public static IServiceCollection AddAssemblyOf<T>(this IServiceCollection services)
     {
-        // TODO 没搞明白Abp怎么优化自动DI
+        // TODO 没搞明白Abp怎么优化自动DI,暂时先扫描目录dll
         var startupAssembly = typeof(T).GetTypeInfo().Assembly;
 
         var dllDirectoryPath = Path.GetDirectoryName(startupAssembly.Location)
@@ -34,13 +35,10 @@ public static class ServiceCollectionConventionalRegistrationExtensions
             referencedAssemblies.Add(Assembly.LoadFrom(dllPath));
         }
 
-        //var referencedAssemblies = AppDomain.CurrentDomain.GetAssemblies();
-
         foreach (var referencedAssembly in referencedAssemblies)
         {
             services.AddAssembly(referencedAssembly);
         }
-        //services.AddAssembly();
 
         return services;
     }
@@ -55,5 +53,24 @@ public static class ServiceCollectionConventionalRegistrationExtensions
         var conventionalRegistrars = new List<IConventionalRegistrar> { new DefaultConventionalRegistrar() };
 
         return conventionalRegistrars;
+    }
+
+    public static void AddNameService(this IServiceCollection services, Type interfaceType, Type implType, string name)
+    {
+        Check.NotNull(services, nameof(services));
+        Check.NotNull(interfaceType, nameof(interfaceType));
+        Check.NotNull(implType, nameof(implType));
+        Check.NotNullOrWhiteSpace(name, nameof(name));
+
+        var namedServiceTypeMap = (NamedServiceTypeMap?)services.FirstOrDefault(
+            p => p.ServiceType == typeof(INamedServiceTypeMap))?.ImplementationInstance;
+
+        if (namedServiceTypeMap is null)
+        {
+            namedServiceTypeMap = new NamedServiceTypeMap();
+            services.AddSingleton<INamedServiceTypeMap>(namedServiceTypeMap);
+        }
+
+        namedServiceTypeMap.AddNamedService(interfaceType, implType, name);
     }
 }

@@ -1,10 +1,11 @@
 using FantasySky.CustomDF.DependencyInjection;
 
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 
 namespace FantasySky.CustomDF.Random;
 
-[Dependency(typeof(IRandomGenerator))]
+[Dependency(typeof(IRandomGenerator), ServiceLifetime.Transient)]
 public class RandomGenerator : IRandomGenerator
 {
     public byte[] Create(int byteCount)

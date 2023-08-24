@@ -17,7 +17,7 @@ public abstract class ApplicationBase<Startup> : IApplication
         IConfiguration configuration,
         Action<ApplicationCreationOptions>? optionsAction)
     {
-        Check.IsNotNull(services, nameof(services));
+        Check.NotNull(services, nameof(services));
 
         this.StartupType = typeof(Startup);
         this.Services = services;

@@ -1,3 +1,5 @@
+using FantasySky.CustomDF.DependencyInjection;
+
 using Microsoft.Extensions.DependencyInjection;
 
 namespace FantasySky.CustomDF.Internal;
@@ -8,7 +10,8 @@ internal static class InternalServiceCollectionExtensions
         IApplication application,
         ApplicationCreationOptions applicationCreationOptions)
     {
-        // TODO
+        // 注册命名服务
+        services.AddScoped(typeof(INamedServiceProvider<>), typeof(NamedServiceProvider<>));
 
         services.AddAssemblyOf<Startup>();
     }

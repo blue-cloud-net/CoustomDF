@@ -6,7 +6,7 @@ public class ApplicationCreationOptions
 {
     public ApplicationCreationOptions(IServiceCollection services)
     {
-        this.Services = Check.IsNotNull(services, nameof(services));
+        this.Services = Check.NotNull(services, nameof(services));
 
         //this.Configuration = new ConfigurationBuilderOptions();
     }
