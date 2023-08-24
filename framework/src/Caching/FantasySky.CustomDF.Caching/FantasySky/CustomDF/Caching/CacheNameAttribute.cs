@@ -9,7 +9,7 @@ public class CacheNameAttribute : Attribute
 
     public CacheNameAttribute([NotNull] string name)
     {
-        Check.IsNotNull(name, nameof(name));
+        Check.NotNull(name, nameof(name));
 
         this.Name = name;
     }

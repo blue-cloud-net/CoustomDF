@@ -1,7 +1,8 @@
 using System.Text;
+using System.Text.Json;
 
 using FantasySky.CustomDF.DependencyInjection;
-using FantasySky.CustomDF.Json;
+using FantasySky.CustomDF.Serialize.Json;
 
 using Microsoft.Extensions.DependencyInjection;
 
@@ -25,6 +26,8 @@ public class Utf8JsonDistributedCacheSerializer : IDistributedCacheSerializer
 
     public byte[] Serialize<T>(T obj)
     {
+        Check.NotNull(obj, nameof(obj));
+
         return Encoding.UTF8.GetBytes(this.JsonSerializer.Serialize(obj));
     }
 }

@@ -14,10 +14,11 @@ public static class ServiceCollectionRedisCacheExtensions
     {
         context.AddDistributedCache();
 
-        var redisCacheOptions = context.Configuration.GetValue<RedisCacheOptions>(RedisCacheOptions.Path);
+        var redisSelection = context.Configuration.GetSection(RedisCacheOptions.Path);
 
-        context.Services.Configure<RedisCacheOptions>(
-            options => context.Configuration.GetValue<RedisCacheOptions>(RedisCacheOptions.Path));
+        var redisCacheOptions = new RedisCacheOptions();
+        redisSelection.Bind(redisCacheOptions);
+        context.Services.Configure<RedisCacheOptions>(redisSelection);
 
         if (redisCacheOptions?.IsEnabled is true)
         {

@@ -1,5 +1,10 @@
+using FantasySky.CustomDF.DependencyInjection;
+
+using Microsoft.Extensions.DependencyInjection;
+
 namespace FantasySky.CustomDF.Caching.StackExchangeRedis;
 
+[Dependency(typeof(IRedisConnectionMultiplexerFactory), ServiceLifetime.Singleton)]
 internal class RedisConnectionMultiplexerFactory : IRedisConnectionMultiplexerFactory, IDisposable
 {
     private readonly SemaphoreSlim _connectionLock = new(initialCount: 1, maxCount: 1);

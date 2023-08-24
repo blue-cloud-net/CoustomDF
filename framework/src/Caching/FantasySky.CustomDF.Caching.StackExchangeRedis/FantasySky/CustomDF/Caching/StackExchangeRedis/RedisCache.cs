@@ -10,7 +10,13 @@ namespace FantasySky.CustomDF.Caching.StackExchangeRedis;
 /// <summary>
 ///
 /// </summary>
-public class RedisCache : IDistributedCache, ICacheSupportsMultipleItems, ICacheSupportsSortSet
+public class RedisCache :
+    IDistributedCache,
+    ICacheSupportsDeleteReturnResult,
+    ICacheSupportsMultipleItems,
+    ICacheSupportsSortSet,
+    ICacheSupportsList,
+    ICacheSupportsIncrement
 {
     private const string _absoluteExpirationKey = "absexp";
 
@@ -47,7 +53,7 @@ public class RedisCache : IDistributedCache, ICacheSupportsMultipleItems, ICache
     /// <param name="connectionFactory">The connection factory.</param>
     /// <param name="optionsAccessor">The configuration options.</param>
     /// <param name="logger">The logger.</param>
-    internal RedisCache(
+    public RedisCache(
         IRedisConnectionMultiplexerFactory connectionFactory,
         IOptions<RedisCacheOptions> optionsAccessor,
         ILogger<RedisCache> logger)
@@ -70,7 +76,7 @@ public class RedisCache : IDistributedCache, ICacheSupportsMultipleItems, ICache
     public byte[][] GetMany(
         IEnumerable<string> keys)
     {
-        keys = Check.IsNotNull(keys, nameof(keys));
+        keys = Check.NotNull(keys, nameof(keys));
 
         return this.GetAndRefreshMany(keys, true);
     }
@@ -79,7 +85,7 @@ public class RedisCache : IDistributedCache, ICacheSupportsMultipleItems, ICache
         IEnumerable<string> keys,
         CancellationToken cancellationToken = default)
     {
-        keys = Check.IsNotNull(keys, nameof(keys));
+        keys = Check.NotNull(keys, nameof(keys));
 
         return await this.GetAndRefreshManyAsync(keys, true, cancellationToken);
     }
@@ -87,7 +93,7 @@ public class RedisCache : IDistributedCache, ICacheSupportsMultipleItems, ICache
     public void RefreshMany(
         IEnumerable<string> keys)
     {
-        keys = Check.IsNotNull(keys, nameof(keys));
+        keys = Check.NotNull(keys, nameof(keys));
 
         this.GetAndRefreshMany(keys, false);
     }
@@ -96,14 +102,14 @@ public class RedisCache : IDistributedCache, ICacheSupportsMultipleItems, ICache
         IEnumerable<string> keys,
         CancellationToken cancellationToken = default)
     {
-        keys = Check.IsNotNull(keys, nameof(keys));
+        keys = Check.NotNull(keys, nameof(keys));
 
         await this.GetAndRefreshManyAsync(keys, false, cancellationToken);
     }
 
     public void RemoveMany(IEnumerable<string> keys)
     {
-        keys = Check.IsNotNull(keys, nameof(keys));
+        keys = Check.NotNull(keys, nameof(keys));
 
         this.Connect();
 
@@ -112,7 +118,7 @@ public class RedisCache : IDistributedCache, ICacheSupportsMultipleItems, ICache
 
     public async Task RemoveManyAsync(IEnumerable<string> keys, CancellationToken cancellationToken = default)
     {
-        keys = Check.IsNotNull(keys, nameof(keys));
+        keys = Check.NotNull(keys, nameof(keys));
 
         cancellationToken.ThrowIfCancellationRequested();
         await this.ConnectAsync(cancellationToken);
@@ -214,7 +220,7 @@ public class RedisCache : IDistributedCache, ICacheSupportsMultipleItems, ICache
 
                     if (absExpr.HasValue)
                     {
-                        var relExpr = absExpr.Value - DateTimeOffset.Now;
+                        var relExpr = absExpr.Value - DateTimeOffset.UtcNow;
                         expr = relExpr <= sldExpr.Value ? relExpr : sldExpr;
                     }
                     else
@@ -247,8 +253,8 @@ public class RedisCache : IDistributedCache, ICacheSupportsMultipleItems, ICache
         IEnumerable<KeyValuePair<string, byte[]>> items,
         DistributedCacheEntryOptions options)
     {
-        items = Check.IsNotNull(items, nameof(items));
-        options = Check.IsNotNull(options, nameof(options));
+        items = Check.NotNull(items, nameof(items));
+        options = Check.NotNull(options, nameof(options));
 
         var itemArray = items.ToArray();
         var tasks = new Task[itemArray.Length];
@@ -315,57 +321,38 @@ public class RedisCache : IDistributedCache, ICacheSupportsMultipleItems, ICache
     }
 
     public void Remove(string key)
+        => this.RemoveWithResult(key);
+
+    public bool RemoveWithResult(string key)
     {
-        if (key == null)
-        {
-            throw new ArgumentNullException(nameof(key));
-        }
+        Check.NotNull(key, nameof(key));
 
         this.Connect();
 
         var redisKey = MakeRedisKey(_instanceName, key);
 
-        // bool结果未能返回上层，只能该层日志写出
-        if (_cache.KeyDelete(redisKey))
-        {
-            _logger.LogWarning("The redis key {RedisKey} delete failed.", redisKey);
-        }
+        return _cache.KeyDelete(redisKey);
     }
 
     public async Task RemoveAsync(string key, CancellationToken cancellationToken = default)
+        => await this.RemoveWithResultAsync(key, cancellationToken);
+
+    public async Task<bool> RemoveWithResultAsync(string key, CancellationToken cancellationToken = default)
     {
-        if (key == null)
-        {
-            throw new ArgumentNullException(nameof(key));
-        }
+        Check.NotNull(key, nameof(key));
 
         await this.ConnectAsync(cancellationToken).ConfigureAwait(false);
 
         var redisKey = MakeRedisKey(_instanceName, key);
 
-        // bool结果未能返回上层，只能该层日志写出
-        if (await _cache.KeyDeleteAsync(redisKey).ConfigureAwait(false))
-        {
-            _logger.LogWarning("The redis key {RedisKey} delete failed.", redisKey);
-        }
+        return await _cache.KeyDeleteAsync(redisKey).ConfigureAwait(false);
     }
 
     public void Set(string key, byte[] value, DistributedCacheEntryOptions options)
     {
-        if (String.IsNullOrWhiteSpace(key))
-        {
-            throw new ArgumentNullException(nameof(key));
-        }
-
-        if (value == null)
-        {
-            throw new ArgumentNullException(nameof(value));
-        }
-
-        if (options == null)
-        {
-            throw new ArgumentNullException(nameof(options));
-        }
+        Check.NotNull(key, nameof(key));
+        Check.NotNull(value, nameof(value));
+        Check.NotNull(options, nameof(options));
 
         this.Connect();
 
@@ -377,20 +364,9 @@ public class RedisCache : IDistributedCache, ICacheSupportsMultipleItems, ICache
 
     public async Task SetAsync(string key, byte[] value, DistributedCacheEntryOptions options, CancellationToken cancellationToken = default)
     {
-        if (key == null)
-        {
-            throw new ArgumentNullException(nameof(key));
-        }
-
-        if (value == null)
-        {
-            throw new ArgumentNullException(nameof(value));
-        }
-
-        if (options == null)
-        {
-            throw new ArgumentNullException(nameof(options));
-        }
+        Check.NotNull(key, nameof(key));
+        Check.NotNull(value, nameof(value));
+        Check.NotNull(options, nameof(options));
 
         cancellationToken.ThrowIfCancellationRequested();
 
@@ -491,7 +467,7 @@ public class RedisCache : IDistributedCache, ICacheSupportsMultipleItems, ICache
             TimeSpan? expr;
             if (absExpr.HasValue)
             {
-                var relExpr = absExpr.Value - DateTimeOffset.Now;
+                var relExpr = absExpr.Value - DateTimeOffset.UtcNow;
                 expr = relExpr <= sldExpr.Value ? relExpr : sldExpr;
             }
             else
@@ -501,7 +477,7 @@ public class RedisCache : IDistributedCache, ICacheSupportsMultipleItems, ICache
 
             var redisKey = MakeRedisKey(_instanceName, key);
 
-            if (cache.KeyExpire(redisKey, expr))
+            if (!cache.KeyExpire(redisKey, expr))
             {
                 _logger.LogWarning("The redis key {RedisKey} set expire failed.", redisKey);
             }
@@ -523,7 +499,7 @@ public class RedisCache : IDistributedCache, ICacheSupportsMultipleItems, ICache
             TimeSpan? expr;
             if (absExpr.HasValue)
             {
-                var relExpr = absExpr.Value - DateTimeOffset.Now;
+                var relExpr = absExpr.Value - DateTimeOffset.UtcNow;
                 expr = relExpr <= sldExpr.Value ? relExpr : sldExpr;
             }
             else
@@ -532,7 +508,7 @@ public class RedisCache : IDistributedCache, ICacheSupportsMultipleItems, ICache
             }
 
             var redisKey = MakeRedisKey(_instanceName, key);
-            if (await cache.KeyExpireAsync(redisKey, expr).ConfigureAwait(false))
+            if (!await cache.KeyExpireAsync(redisKey, expr).ConfigureAwait(false))
             {
                 _logger.LogWarning("The redis key {RedisKey} set expire failed.", redisKey);
             }
@@ -541,13 +517,13 @@ public class RedisCache : IDistributedCache, ICacheSupportsMultipleItems, ICache
 
     #endregion HashSingle
 
-    #region SortSet
+    #region SortedSet
 
     public bool SortedSetAdd(string key, double order, byte[] value, DistributedCacheEntryOptions? options = null)
     {
-        Check.IsNotNullOrWhiteSpace(key, nameof(key));
-        Check.IsNotNull(value, nameof(value));
-        Check.IsNotNull(options, nameof(options));
+        Check.NotNullOrWhiteSpace(key, nameof(key));
+        Check.NotNull(value, nameof(value));
+        options ??= new DistributedCacheEntryOptions();
 
         this.Connect();
 
@@ -561,9 +537,9 @@ public class RedisCache : IDistributedCache, ICacheSupportsMultipleItems, ICache
 
     public async Task<bool> SortedSetAddAsync(string key, double order, byte[] value, DistributedCacheEntryOptions? options = null, CancellationToken cancellationToken = default)
     {
-        Check.IsNotNullOrWhiteSpace(key, nameof(key));
-        Check.IsNotNull(value, nameof(value));
-        Check.IsNotNull(options, nameof(options));
+        Check.NotNullOrWhiteSpace(key, nameof(key));
+        Check.NotNull(value, nameof(value));
+        options ??= new DistributedCacheEntryOptions();
 
         cancellationToken.ThrowIfCancellationRequested();
 
@@ -577,9 +553,25 @@ public class RedisCache : IDistributedCache, ICacheSupportsMultipleItems, ICache
         return result.Type is not ResultType.Error;
     }
 
+    public async Task<bool> SortedSetRemoveAsync(string key, byte[] value, CancellationToken cancellationToken = default)
+    {
+        Check.NotNullOrWhiteSpace(key, nameof(key));
+        Check.NotNull(value, nameof(value));
+
+        cancellationToken.ThrowIfCancellationRequested();
+
+        await this.ConnectAsync(cancellationToken).ConfigureAwait(false);
+
+        var redisKey = MakeRedisKey(_instanceName, key);
+
+        await _cache.SortedSetRemoveAsync(redisKey, value);
+
+        return true;
+    }
+
     public long SortedSetGetCount(string key, double minOrder, double maxOrder)
     {
-        Check.IsNotNullOrWhiteSpace(key, nameof(key));
+        Check.NotNullOrWhiteSpace(key, nameof(key));
 
         this.Connect();
 
@@ -590,7 +582,9 @@ public class RedisCache : IDistributedCache, ICacheSupportsMultipleItems, ICache
 
     public async Task<long> SortedSetGetCountAsync(string key, double minOrder, double maxOrder, CancellationToken cancellationToken = default)
     {
-        Check.IsNotNullOrWhiteSpace(key, nameof(key));
+        Check.NotNullOrWhiteSpace(key, nameof(key));
+
+        cancellationToken.ThrowIfCancellationRequested();
 
         await this.ConnectAsync(cancellationToken);
 
@@ -599,7 +593,149 @@ public class RedisCache : IDistributedCache, ICacheSupportsMultipleItems, ICache
         return await _cache.SortedSetLengthAsync(redisKey, minOrder, maxOrder);
     }
 
+    public async Task<byte[][]> SortedSetListAsync(string key, double minOrder, double maxOrder, CancellationToken cancellationToken = default)
+    {
+        Check.NotNullOrWhiteSpace(key, nameof(key));
+
+        cancellationToken.ThrowIfCancellationRequested();
+
+        await this.ConnectAsync(cancellationToken);
+
+        var redisKey = MakeRedisKey(_instanceName, key);
+
+        var valus = await _cache.SortedSetRangeByScoreAsync(redisKey, minOrder, maxOrder);
+
+        return valus.Select(p => (byte[])p!).ToArray();
+    }
+
     #endregion SortSet
+
+    #region List
+
+    public async Task<bool> ListLPushAsync(
+        string key,
+        byte[] value,
+        CancellationToken cancellationToken = default)
+    {
+        Check.NotNullOrWhiteSpace(key, nameof(key));
+
+        cancellationToken.ThrowIfCancellationRequested();
+
+        await this.ConnectAsync(cancellationToken);
+
+        var redisKey = MakeRedisKey(_instanceName, key);
+
+        await _cache.ListLeftPushAsync(redisKey, value);
+
+        return true;
+    }
+
+    public async Task<byte[]?> ListLPopAsync(
+        string key,
+        CancellationToken cancellationToken = default)
+    {
+        Check.NotNullOrWhiteSpace(key, nameof(key));
+
+        cancellationToken.ThrowIfCancellationRequested();
+
+        await this.ConnectAsync(cancellationToken);
+
+        var redisKey = MakeRedisKey(_instanceName, key);
+
+        return await _cache.ListLeftPopAsync(redisKey);
+    }
+
+    public async Task<bool> ListRPushAsync(
+        string key,
+        byte[] value,
+        CancellationToken cancellationToken = default)
+    {
+        Check.NotNullOrWhiteSpace(key, nameof(key));
+
+        cancellationToken.ThrowIfCancellationRequested();
+
+        await this.ConnectAsync(cancellationToken);
+
+        var redisKey = MakeRedisKey(_instanceName, key);
+
+        await _cache.ListRightPushAsync(redisKey, value);
+
+        return true;
+    }
+
+    public async Task<byte[]?> ListRPopAsync(
+        string key,
+        CancellationToken cancellationToken = default)
+    {
+        Check.NotNullOrWhiteSpace(key, nameof(key));
+
+        cancellationToken.ThrowIfCancellationRequested();
+
+        await this.ConnectAsync(cancellationToken);
+
+        var redisKey = MakeRedisKey(_instanceName, key);
+
+        return await _cache.ListRightPopAsync(redisKey);
+    }
+
+    public async Task<byte[][]> ListRangeAsync(
+        string key,
+        long? min = null,
+        long? max = null,
+        CancellationToken cancellationToken = default)
+    {
+        Check.NotNullOrWhiteSpace(key, nameof(key));
+
+        min ??= 0;
+        max ??= -1;
+
+        if (min < 0)
+        {
+            throw new ArgumentNullException(nameof(min));
+        }
+
+        cancellationToken.ThrowIfCancellationRequested();
+
+        await this.ConnectAsync(cancellationToken);
+
+        var redisKey = MakeRedisKey(_instanceName, key);
+
+        var values = await _cache.ListRangeAsync(redisKey, min.Value, max.Value);
+
+        return values.Select(p => (byte[])p!).ToArray();
+    }
+
+    public async Task<long> ListCountAsync(
+        string key,
+        CancellationToken cancellationToken = default)
+    {
+        Check.NotNullOrWhiteSpace(key, nameof(key));
+
+        cancellationToken.ThrowIfCancellationRequested();
+
+        await this.ConnectAsync(cancellationToken);
+
+        var redisKey = MakeRedisKey(_instanceName, key);
+
+        var count = await _cache.ListLengthAsync(redisKey);
+
+        return count;
+    }
+
+    #endregion
+
+    public async Task<long> IncrementAsync(string key, string filed, long increment = 1, CancellationToken cancellationToken = default)
+    {
+        Check.NotNullOrWhiteSpace(key, nameof(key));
+
+        cancellationToken.ThrowIfCancellationRequested();
+
+        await this.ConnectAsync(cancellationToken);
+
+        var result = await _cache.HashIncrementAsync(key, filed, increment);
+
+        return result;
+    }
 
     #region Connect
 

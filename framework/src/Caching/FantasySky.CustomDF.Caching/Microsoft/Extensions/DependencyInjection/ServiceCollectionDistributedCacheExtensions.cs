@@ -15,6 +15,8 @@ public static class ServiceCollectionDistributedCacheExtensions
         context.Services.AddSingleton(typeof(IDistributedCache<>), typeof(DistributedCache<>));
         context.Services.AddSingleton(typeof(IDistributedCache<,>), typeof(DistributedCache<,>));
 
+        context.Services.AddSingleton(typeof(INoIncrementer), typeof(NoIncrementer));
+
         return;
     }
 }

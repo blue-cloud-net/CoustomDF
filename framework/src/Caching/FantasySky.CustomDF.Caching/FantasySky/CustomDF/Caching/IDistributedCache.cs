@@ -1,3 +1,5 @@
+using FantasySky.CustomDF.Domain.Values;
+
 using Microsoft.Extensions.Caching.Distributed;
 
 namespace FantasySky.CustomDF.Caching;
@@ -7,7 +9,6 @@ namespace FantasySky.CustomDF.Caching;
 /// </summary>
 /// <typeparam name="TCacheItem">The type of cache item being cached.</typeparam>
 public interface IDistributedCache<TCacheItem> : IDistributedCache<TCacheItem, string>
-    where TCacheItem : class
 {
     IDistributedCache<TCacheItem, string> InternalCache { get; }
 }
@@ -19,7 +20,6 @@ public interface IDistributedCache<TCacheItem> : IDistributedCache<TCacheItem, s
 /// <typeparam name="TCacheItem">The type of cache item being cached.</typeparam>
 /// <typeparam name="TCacheKey">The type of cache key being used.</typeparam>
 public interface IDistributedCache<TCacheItem, TCacheKey>
-    where TCacheItem : class
 {
     #region Basic
 
@@ -272,6 +272,17 @@ public interface IDistributedCache<TCacheItem, TCacheKey>
         DistributedCacheEntryOptions? options = null,
         CancellationToken cancellationToken = default);
 
+    Task<bool> SortedSetRemoveAsync(
+        TCacheKey key,
+        TCacheItem value,
+        CancellationToken cancellationToken = default);
+
+    Task<List<TCacheItem>> SortedSetListAsync(
+        TCacheKey key,
+        double? min = null,
+        double? max = null,
+        CancellationToken cancellationToken = default);
+
     Task<long> SortedSetCountAsync(
         TCacheKey key,
         double? min = null,
@@ -279,4 +290,55 @@ public interface IDistributedCache<TCacheItem, TCacheKey>
         CancellationToken cancellationToken = default);
 
     #endregion SortedSet
+
+    #region List
+
+    Task<bool> ListLPushAsync(
+        TCacheKey key,
+        TCacheItem value,
+        CancellationToken cancellationToken = default);
+
+    Task<TCacheItem?> ListLPopAsync(
+        TCacheKey key,
+        CancellationToken cancellationToken = default);
+
+    Task<bool> ListRPushAsync(
+        TCacheKey key,
+        TCacheItem value,
+        CancellationToken cancellationToken = default);
+
+    Task<TCacheItem?> ListRPopAsync(
+        TCacheKey key,
+        CancellationToken cancellationToken = default);
+
+    Task<List<TCacheItem>> ListRangeAsync(
+        TCacheKey key,
+        int? min = null,
+        int? max = null,
+        CancellationToken cancellationToken = default);
+
+    Task<long> ListCountAsync(
+        TCacheKey key,
+        CancellationToken cancellationToken = default);
+
+    #endregion
+}
+
+public interface INoIncrementer
+{
+    /// <summary>
+    /// Increame the cache item value for the provided key.
+    /// </summary>
+    /// <param name="key">The key of cached item to be retrieved from the cache.</param>
+    /// <param name="cancellationToken"></param>
+    /// <returns>The cache item, or null.</returns>
+    Task<CommonNo> IncreameAsync(
+        string key,
+        CancellationToken cancellationToken = default
+    );
+
+    Task<CommonNo> IncrementByDateAsync(
+        string key,
+        CancellationToken cancellationToken
+    );
 }

@@ -9,7 +9,6 @@ using Microsoft.Extensions.Options;
 namespace FantasySky.CustomDF.Caching;
 
 public class DistributedCache<TCacheItem> : IDistributedCache<TCacheItem>
-    where TCacheItem : class
 {
     public IDistributedCache<TCacheItem, string> InternalCache { get; }
 
@@ -17,6 +16,8 @@ public class DistributedCache<TCacheItem> : IDistributedCache<TCacheItem>
     {
         this.InternalCache = internalCache;
     }
+
+    #region Basic
 
     public TCacheItem? Get(string key)
         => this.InternalCache.Get(key);
@@ -86,11 +87,45 @@ public class DistributedCache<TCacheItem> : IDistributedCache<TCacheItem>
     public Task<bool> RemoveManyAsync(IEnumerable<string> keys, CancellationToken cancellationToken = default)
         => this.InternalCache.RemoveManyAsync(keys, cancellationToken);
 
+    #endregion
+
+    #region SortedSet
+
     public Task<bool> SortedSetAddAsync(string key, double orderNumber, TCacheItem value, DistributedCacheEntryOptions? options = null, CancellationToken cancellationToken = default)
         => this.InternalCache.SortedSetAddAsync(key, orderNumber, value, options, cancellationToken);
 
+    public Task<bool> SortedSetRemoveAsync(string key, TCacheItem value, CancellationToken cancellationToken = default)
+        => this.InternalCache.SortedSetRemoveAsync(key, value, cancellationToken);
+
     public Task<long> SortedSetCountAsync(string key, double? min = null, double? max = null, CancellationToken cancellationToken = default)
         => this.InternalCache.SortedSetCountAsync(key, min, max, cancellationToken);
+
+    public Task<List<TCacheItem>> SortedSetListAsync(string key, double? min = null, double? max = null, CancellationToken cancellationToken = default)
+        => this.InternalCache.SortedSetListAsync(key, min, max, cancellationToken);
+
+    #endregion
+
+    #region List
+
+    public Task<bool> ListLPushAsync(string key, TCacheItem value, CancellationToken cancellationToken = default)
+        => this.InternalCache.ListLPushAsync(key, value, cancellationToken);
+
+    public Task<TCacheItem?> ListLPopAsync(string key, CancellationToken cancellationToken = default)
+        => this.InternalCache.ListRPopAsync(key, cancellationToken);
+
+    public Task<bool> ListRPushAsync(string key, TCacheItem value, CancellationToken cancellationToken = default)
+        => this.InternalCache.ListRPushAsync(key, value, cancellationToken);
+
+    public Task<TCacheItem?> ListRPopAsync(string key, CancellationToken cancellationToken = default)
+    => this.InternalCache.ListRPopAsync(key, cancellationToken);
+
+    public Task<List<TCacheItem>> ListRangeAsync(string key, int? min = null, int? max = null, CancellationToken cancellationToken = default)
+        => this.InternalCache.ListRangeAsync(key, min, max, cancellationToken);
+
+    public Task<long> ListCountAsync(string key, CancellationToken cancellationToken = default)
+        => this.InternalCache.ListCountAsync(key, cancellationToken);
+
+    #endregion
 }
 
 /// <summary>
@@ -100,7 +135,6 @@ public class DistributedCache<TCacheItem> : IDistributedCache<TCacheItem>
 /// <typeparam name="TCacheItem">The type of cache item being cached.</typeparam>
 /// <typeparam name="TCacheKey">The type of cache key being used.</typeparam>
 public class DistributedCache<TCacheItem, TCacheKey> : IDistributedCache<TCacheItem, TCacheKey>
-    where TCacheItem : class
 {
     public ILogger<DistributedCache<TCacheItem, TCacheKey>> Logger { get; set; }
 
@@ -154,7 +188,7 @@ public class DistributedCache<TCacheItem, TCacheKey> : IDistributedCache<TCacheI
 
     protected virtual string NormalizeKey(TCacheKey key)
     {
-        Check.IsNotNull(key, nameof(key));
+        Check.NotNull(key, nameof(key));
 
         if (key is string keyString)
         {
@@ -169,6 +203,8 @@ public class DistributedCache<TCacheItem, TCacheKey> : IDistributedCache<TCacheI
         );
     }
 
+    #region Basic
+
     public virtual TCacheItem? Get(TCacheKey key)
     {
         byte[]? cachedBytes;
@@ -181,14 +217,14 @@ public class DistributedCache<TCacheItem, TCacheKey> : IDistributedCache<TCacheI
         {
             this.HandleException(ex);
 
-            return null;
+            return default;
         }
 
-        return cachedBytes is null ? null : this.ToCacheItem(cachedBytes);
+        return cachedBytes is null ? default : this.ToCacheItem(cachedBytes);
     }
 
     public virtual KeyValuePair<TCacheKey, TCacheItem?>[] GetMany(
-        IEnumerable<TCacheKey> keys)
+                IEnumerable<TCacheKey> keys)
     {
         var keyArray = keys.ToArray();
 
@@ -215,7 +251,7 @@ public class DistributedCache<TCacheItem, TCacheKey> : IDistributedCache<TCacheI
     }
 
     protected virtual KeyValuePair<TCacheKey, TCacheItem?>[] GetManyFallback(
-        TCacheKey[] keys)
+                TCacheKey[] keys)
     {
         try
         {
@@ -234,7 +270,7 @@ public class DistributedCache<TCacheItem, TCacheKey> : IDistributedCache<TCacheI
     }
 
     public virtual async Task<KeyValuePair<TCacheKey, TCacheItem?>[]> GetManyAsync(
-        IEnumerable<TCacheKey> keys,
+                IEnumerable<TCacheKey> keys,
         CancellationToken cancellationToken = default)
     {
         var keyArray = keys.ToArray();
@@ -266,7 +302,7 @@ public class DistributedCache<TCacheItem, TCacheKey> : IDistributedCache<TCacheI
     }
 
     protected virtual async Task<KeyValuePair<TCacheKey, TCacheItem?>[]> GetManyFallbackAsync(
-        TCacheKey[] keys,
+                TCacheKey[] keys,
         CancellationToken cancellationToken = default)
     {
         try
@@ -291,7 +327,7 @@ public class DistributedCache<TCacheItem, TCacheKey> : IDistributedCache<TCacheI
     }
 
     public virtual async Task<TCacheItem?> GetAsync(
-        TCacheKey key,
+                TCacheKey key,
         CancellationToken cancellationToken = default)
     {
         byte[]? cachedBytes;
@@ -306,19 +342,19 @@ public class DistributedCache<TCacheItem, TCacheKey> : IDistributedCache<TCacheI
         catch (Exception ex)
         {
             await this.HandleExceptionAsync(ex);
-            return null;
+            return default;
         }
 
         if (cachedBytes is null)
         {
-            return null;
+            return default;
         }
 
         return this.Serializer.Deserialize<TCacheItem>(cachedBytes);
     }
 
     public virtual TCacheItem? GetOrAdd(
-        TCacheKey key,
+                TCacheKey key,
         Func<TCacheItem> factory,
         Func<DistributedCacheEntryOptions>? optionsFactory = null)
     {
@@ -355,7 +391,7 @@ public class DistributedCache<TCacheItem, TCacheKey> : IDistributedCache<TCacheI
     }
 
     public virtual async Task<TCacheItem?> GetOrAddAsync(
-        TCacheKey key,
+                TCacheKey key,
         Func<Task<TCacheItem>> factory,
         Func<DistributedCacheEntryOptions>? optionsFactory = null,
         CancellationToken cancellationToken = default)
@@ -393,7 +429,7 @@ public class DistributedCache<TCacheItem, TCacheKey> : IDistributedCache<TCacheI
     }
 
     public KeyValuePair<TCacheKey, TCacheItem?>[] GetOrAddMany(
-        IEnumerable<TCacheKey> keys,
+                IEnumerable<TCacheKey> keys,
         Func<IEnumerable<TCacheKey>, List<KeyValuePair<TCacheKey, TCacheItem>>> factory,
         Func<DistributedCacheEntryOptions>? optionsFactory = null)
     {
@@ -455,7 +491,7 @@ public class DistributedCache<TCacheItem, TCacheKey> : IDistributedCache<TCacheI
     }
 
     public async Task<KeyValuePair<TCacheKey, TCacheItem?>[]> GetOrAddManyAsync(
-        IEnumerable<TCacheKey> keys,
+                IEnumerable<TCacheKey> keys,
         Func<IEnumerable<TCacheKey>, Task<List<KeyValuePair<TCacheKey, TCacheItem>>>> factory,
         Func<DistributedCacheEntryOptions>? optionsFactory = null,
         CancellationToken cancellationToken = default)
@@ -574,7 +610,7 @@ public class DistributedCache<TCacheItem, TCacheKey> : IDistributedCache<TCacheI
     }
 
     public void SetMany(
-        IEnumerable<KeyValuePair<TCacheKey, TCacheItem>> items,
+            IEnumerable<KeyValuePair<TCacheKey, TCacheItem>> items,
         DistributedCacheEntryOptions? options = null)
     {
         var itemsArray = items.ToArray();
@@ -604,7 +640,7 @@ public class DistributedCache<TCacheItem, TCacheKey> : IDistributedCache<TCacheI
     }
 
     protected virtual void SetManyFallback(
-        KeyValuePair<TCacheKey, TCacheItem>[] items,
+            KeyValuePair<TCacheKey, TCacheItem>[] items,
         DistributedCacheEntryOptions? options = null)
     {
         try
@@ -626,7 +662,7 @@ public class DistributedCache<TCacheItem, TCacheKey> : IDistributedCache<TCacheI
     }
 
     public virtual async Task SetManyAsync(
-        IEnumerable<KeyValuePair<TCacheKey, TCacheItem>> items,
+            IEnumerable<KeyValuePair<TCacheKey, TCacheItem>> items,
         DistributedCacheEntryOptions? options = null,
         CancellationToken cancellationToken = default)
     {
@@ -659,7 +695,7 @@ public class DistributedCache<TCacheItem, TCacheKey> : IDistributedCache<TCacheI
     }
 
     protected virtual async Task SetManyFallbackAsync(
-        KeyValuePair<TCacheKey, TCacheItem>[] items,
+            KeyValuePair<TCacheKey, TCacheItem>[] items,
         DistributedCacheEntryOptions? options = null,
         CancellationToken cancellationToken = default)
     {
@@ -701,7 +737,7 @@ public class DistributedCache<TCacheItem, TCacheKey> : IDistributedCache<TCacheI
     }
 
     public virtual async Task RefreshAsync(
-        TCacheKey key,
+            TCacheKey key,
         CancellationToken cancellationToken = default)
     {
         try
@@ -716,7 +752,7 @@ public class DistributedCache<TCacheItem, TCacheKey> : IDistributedCache<TCacheI
     }
 
     public virtual void RefreshMany(
-        IEnumerable<TCacheKey> keys)
+            IEnumerable<TCacheKey> keys)
     {
         try
         {
@@ -740,7 +776,7 @@ public class DistributedCache<TCacheItem, TCacheKey> : IDistributedCache<TCacheI
     }
 
     public virtual async Task RefreshManyAsync(
-        IEnumerable<TCacheKey> keys,
+            IEnumerable<TCacheKey> keys,
         CancellationToken cancellationToken = default)
     {
         try
@@ -765,11 +801,18 @@ public class DistributedCache<TCacheItem, TCacheKey> : IDistributedCache<TCacheI
     }
 
     public virtual bool Remove(
-        TCacheKey key)
+            TCacheKey key)
     {
         try
         {
-            this.Cache.Remove(this.NormalizeKey(key));
+            var normalizeKey = this.NormalizeKey(key);
+
+            if (this.Cache is ICacheSupportsDeleteReturnResult cacheWithResult)
+            {
+                return cacheWithResult.RemoveWithResult(normalizeKey);
+            }
+
+            this.Cache.Remove(normalizeKey);
         }
         catch (Exception ex)
         {
@@ -781,11 +824,18 @@ public class DistributedCache<TCacheItem, TCacheKey> : IDistributedCache<TCacheI
     }
 
     public virtual async Task<bool> RemoveAsync(
-        TCacheKey key,
+            TCacheKey key,
         CancellationToken cancellationToken = default)
     {
         try
         {
+            var normalizeKey = this.NormalizeKey(key);
+
+            if (this.Cache is ICacheSupportsDeleteReturnResult cacheWithResult)
+            {
+                return await cacheWithResult.RemoveWithResultAsync(normalizeKey);
+            }
+
             await this.Cache.RemoveAsync(this.NormalizeKey(key), cancellationToken);
         }
         catch (Exception ex)
@@ -798,7 +848,7 @@ public class DistributedCache<TCacheItem, TCacheKey> : IDistributedCache<TCacheI
     }
 
     public bool RemoveMany(
-        IEnumerable<TCacheKey> keys)
+            IEnumerable<TCacheKey> keys)
     {
         var keyArray = keys.ToArray();
 
@@ -828,7 +878,7 @@ public class DistributedCache<TCacheItem, TCacheKey> : IDistributedCache<TCacheI
     }
 
     public async Task<bool> RemoveManyAsync(
-        IEnumerable<TCacheKey> keys,
+            IEnumerable<TCacheKey> keys,
         CancellationToken cancellationToken = default)
     {
         var keyArray = keys.ToArray();
@@ -857,6 +907,10 @@ public class DistributedCache<TCacheItem, TCacheKey> : IDistributedCache<TCacheI
         return true;
     }
 
+    #endregion
+
+    #region SortSet
+
     public async Task<bool> SortedSetAddAsync(TCacheKey key, double orderNumber, TCacheItem value, DistributedCacheEntryOptions? options = null, CancellationToken cancellationToken = default)
     {
         if (this.Cache is ICacheSupportsSortSet sortCache)
@@ -868,6 +922,27 @@ public class DistributedCache<TCacheItem, TCacheKey> : IDistributedCache<TCacheI
                     orderNumber,
                     this.Serializer.Serialize(value),
                     options,
+                    cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                await this.HandleExceptionAsync(ex);
+                return false;
+            }
+        }
+
+        throw new NotSupportedException();
+    }
+
+    public async Task<bool> SortedSetRemoveAsync(TCacheKey key, TCacheItem value, CancellationToken cancellationToken = default)
+    {
+        if (this.Cache is ICacheSupportsSortSet sortCache)
+        {
+            try
+            {
+                return await sortCache.SortedSetRemoveAsync(
+                    this.NormalizeKey(key),
+                    this.Serializer.Serialize(value),
                     cancellationToken);
             }
             catch (Exception ex)
@@ -893,6 +968,162 @@ public class DistributedCache<TCacheItem, TCacheKey> : IDistributedCache<TCacheI
 
         throw new NotSupportedException();
     }
+
+    public async Task<List<TCacheItem>> SortedSetListAsync(TCacheKey key, double? min = null, double? max = null, CancellationToken cancellationToken = default)
+    {
+        if (this.Cache is ICacheSupportsSortSet sortCache)
+        {
+            var values = await sortCache.SortedSetListAsync(
+                this.NormalizeKey(key),
+                min ?? Double.MinValue,
+                max ?? Double.MaxValue,
+                cancellationToken);
+
+            return values.Select(p => this.Serializer.Deserialize<TCacheItem>(p)!).ToList();
+        }
+
+        throw new NotSupportedException();
+    }
+
+    #endregion
+
+    #region List
+
+    public async Task<bool> ListLPushAsync(TCacheKey key, TCacheItem value, CancellationToken cancellationToken = default)
+    {
+        if (this.Cache is ICacheSupportsList listCache)
+        {
+            try
+            {
+                return await listCache.ListLPushAsync(
+                    this.NormalizeKey(key),
+                    this.Serializer.Serialize(value),
+                    cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                await this.HandleExceptionAsync(ex);
+                return false;
+            }
+        }
+
+        throw new NotSupportedException();
+    }
+
+    public async Task<TCacheItem?> ListLPopAsync(TCacheKey key, CancellationToken cancellationToken = default)
+    {
+        if (this.Cache is ICacheSupportsList listCache)
+        {
+            try
+            {
+                var cachedBytes = await listCache.ListLPopAsync(
+                    this.NormalizeKey(key),
+                    cancellationToken);
+
+                return this.ToCacheItem(cachedBytes);
+            }
+            catch (Exception ex)
+            {
+                await this.HandleExceptionAsync(ex);
+                return default;
+            }
+        }
+
+        throw new NotSupportedException();
+    }
+
+    public async Task<bool> ListRPushAsync(TCacheKey key, TCacheItem value, CancellationToken cancellationToken = default)
+    {
+        if (this.Cache is ICacheSupportsList listCache)
+        {
+            try
+            {
+                return await listCache.ListRPushAsync(
+                    this.NormalizeKey(key),
+                    this.Serializer.Serialize(value),
+                    cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                await this.HandleExceptionAsync(ex);
+                return false;
+            }
+        }
+
+        throw new NotSupportedException();
+    }
+
+    public async Task<TCacheItem?> ListRPopAsync(TCacheKey key, CancellationToken cancellationToken = default)
+    {
+        if (this.Cache is ICacheSupportsList listCache)
+        {
+            try
+            {
+                var cachedBytes = await listCache.ListRPopAsync(
+                    this.NormalizeKey(key),
+                    cancellationToken);
+
+                return this.ToCacheItem(cachedBytes);
+            }
+            catch (Exception ex)
+            {
+                await this.HandleExceptionAsync(ex);
+                return default;
+            }
+        }
+
+        throw new NotSupportedException();
+    }
+
+    public async Task<List<TCacheItem>> ListRangeAsync(TCacheKey key, int? min = null, int? max = null, CancellationToken cancellationToken = default)
+    {
+        if (this.Cache is ICacheSupportsList listCache)
+        {
+            try
+            {
+                var cachedBytesArray = await listCache.ListRangeAsync(
+                    this.NormalizeKey(key),
+                    min,
+                    max,
+                    cancellationToken);
+
+                var cacheItems = cachedBytesArray.Select(p => this.ToCacheItem(p)!).ToList();
+
+                return cacheItems;
+            }
+            catch (Exception ex)
+            {
+                await this.HandleExceptionAsync(ex);
+                return new List<TCacheItem>(0);
+            }
+        }
+
+        throw new NotSupportedException();
+    }
+
+    public async Task<long> ListCountAsync(TCacheKey key, CancellationToken cancellationToken = default)
+    {
+        if (this.Cache is ICacheSupportsList listCache)
+        {
+            try
+            {
+                var count = await listCache.ListCountAsync(
+                    this.NormalizeKey(key),
+                    cancellationToken);
+
+                return count;
+            }
+            catch (Exception ex)
+            {
+                await this.HandleExceptionAsync(ex);
+                return 0;
+            }
+        }
+
+        throw new NotSupportedException();
+    }
+
+    #endregion
 
     protected virtual void HandleException(Exception ex)
     {
@@ -932,7 +1163,7 @@ public class DistributedCache<TCacheItem, TCacheKey> : IDistributedCache<TCacheI
     {
         if (bytes == null)
         {
-            return null;
+            return default;
         }
 
         return this.Serializer.Deserialize<TCacheItem>(bytes);
