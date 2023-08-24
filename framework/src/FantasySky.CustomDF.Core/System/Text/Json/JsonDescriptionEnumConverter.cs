@@ -88,18 +88,19 @@ public class JsonDescriptionEnumConverter<T> : JsonConverter<T> where T : struct
 
         var descAttribute = filed.GetCustomAttribute<DescriptionAttribute>();
 
-        var desc = descAttribute?.Description;
+        var result = descAttribute?.Description;
 
-        if (String.IsNullOrWhiteSpace(descAttribute?.Description))
+        if (result.IsNullOrWhiteSpace())
         {
             // Description为空的情况，使用Name
-            desc = Enum.GetName(value);
+            result = Enum.GetName(value);
         }
 
-        writer.WriteStartObject();
+        if (result.IsNullOrWhiteSpace())
+        {
+            throw new JsonException($"Unexpected '{typeof(T).Name}' enum value '{value}'");
+        }
 
-        writer.WriteStringValue(descAttribute?.Description ?? String.Empty);
-
-        writer.WriteEndObject();
+        writer.WriteStringValue(descAttribute?.Description ?? value.GetName() ?? value.ToString());
     }
 }

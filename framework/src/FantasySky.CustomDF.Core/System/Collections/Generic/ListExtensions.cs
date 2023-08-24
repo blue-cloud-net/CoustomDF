@@ -11,7 +11,7 @@ public static class ListExtensions
 {
     public static T GetOrAdd<T>([NotNull] this IList<T> source, Func<T, bool> selector, Func<T> factory)
     {
-        Check.IsNotNull(source, nameof(source));
+        Check.NotNull(source, nameof(source));
 
         var item = source.FirstOrDefault(selector);
 

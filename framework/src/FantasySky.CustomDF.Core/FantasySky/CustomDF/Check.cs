@@ -9,8 +9,9 @@ namespace FantasySky.CustomDF;
 [DebuggerStepThrough]
 public static class Check
 {
-    public static T IsNotDefaultOrNull<T>(
-        [NotNull] T? value,
+    [return: NotNull]
+    public static T NotDefaultOrNull<T>(
+        T? value,
         string parameterName)
         where T : struct
     {
@@ -27,8 +28,9 @@ public static class Check
         return value.Value;
     }
 
-    public static T IsNotNull<T>(
-            [NotNull] T? value,
+    [return: NotNull]
+    public static T NotNull<T>(
+        [NotNull] T? value,
         string parameterName)
     {
         if (value == null)
@@ -39,8 +41,9 @@ public static class Check
         return value;
     }
 
-    public static T IsNotNull<T>(
-        [NotNull] T? value,
+    [return: NotNull]
+    public static T NotNull<T>(
+        T? value,
         string parameterName,
         string message)
     {
@@ -52,8 +55,8 @@ public static class Check
         return value;
     }
 
-    public static string IsNotNullOrEmpty(
-        [NotNull] string? value,
+    public static string NotNullOrEmpty(
+        string? value,
         string parameterName)
     {
         if (value.IsNullOrEmpty())
@@ -64,8 +67,8 @@ public static class Check
         return value;
     }
 
-    public static ICollection<T> IsNotNullOrEmpty<T>(
-        [NotNull] ICollection<T>? value,
+    public static T[] NotNullOrEmpty<T>(
+        T[]? value,
         string parameterName)
     {
         if (value.IsNullOrEmpty())
@@ -76,8 +79,8 @@ public static class Check
         return value;
     }
 
-    public static IEnumerable<T> IsNotNullOrEmpty<T>(
-        [NotNull] IEnumerable<T>? value,
+    public static IEnumerable<T> NotNullOrEmpty<T>(
+        IEnumerable<T>? value,
         string parameterName)
     {
         if (value.IsNullOrEmpty())
@@ -88,8 +91,8 @@ public static class Check
         return value;
     }
 
-    public static string IsNotNullOrWhiteSpace(
-                [NotNull] string? value,
+    public static string NotNullOrWhiteSpace(
+        string? value,
         string parameterName)
     {
         if (value.IsNullOrWhiteSpace())

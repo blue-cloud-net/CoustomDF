@@ -1,6 +1,8 @@
 using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.RegularExpressions;
 
 using FantasySky.CustomDF;
 
@@ -24,8 +26,8 @@ public static class StringExtensions
     /// </summary>
     public static byte[] GetBytes([NotNull] this string str, [NotNull] Encoding encoding)
     {
-        Check.IsNotNull(str, nameof(str));
-        Check.IsNotNull(encoding, nameof(encoding));
+        Check.NotNull(str, nameof(str));
+        Check.NotNull(encoding, nameof(encoding));
 
         return encoding.GetBytes(str);
     }
@@ -51,7 +53,14 @@ public static class StringExtensions
     /// </summary>
     public static string NormalizeLineEndings(this string str)
     {
-        return str.Replace("\r\n", "\n").Replace("\r", "\n").Replace("\n", Environment.NewLine);
+        var sb = new StringBuilder(str);
+
+        sb = sb
+            .Replace("\r\n", "\n")
+            .Replace("\r", "\n")
+            .Replace("\n", Environment.NewLine);
+
+        return sb.ToString();
     }
 
     /// <summary>
@@ -59,7 +68,14 @@ public static class StringExtensions
     /// </summary>
     public static string RemoveLineEndings(this string str)
     {
-        return str.Replace("\r\n", "\n").Replace("\r", "\n").Replace("\n", String.Empty);
+        var sb = new StringBuilder(str);
+
+        sb = sb
+            .Replace("\r\n", String.Empty)
+            .Replace("\r", String.Empty)
+            .Replace("\n", String.Empty);
+
+        return sb.ToString();
     }
 
     /// <summary>
@@ -151,7 +167,7 @@ public static class StringExtensions
     /// <exception cref="ArgumentException">Thrown if <paramref name="len"/> is bigger that string's length</exception>
     public static string Left(this string str, int len)
     {
-        Check.IsNotNull(str, nameof(str));
+        Check.NotNull(str, nameof(str));
 
         if (str.Length < len)
         {
@@ -168,14 +184,14 @@ public static class StringExtensions
     /// <exception cref="ArgumentException">Thrown if <paramref name="len"/> is bigger that string's length</exception>
     public static string Right(this string str, int len)
     {
-        Check.IsNotNull(str, nameof(str));
+        Check.NotNull(str, nameof(str));
 
         if (str.Length < len)
         {
             throw new ArgumentException("len argument can not be bigger than given string's length!");
         }
 
-        return str[(str.Length - len)..len];
+        return str[(str.Length - len)..(len - 1)];
     }
 
     /// <summary>
@@ -219,7 +235,7 @@ public static class StringExtensions
     public static T ToEnum<T>(this string value)
         where T : struct
     {
-        Check.IsNotNull(value, nameof(value));
+        Check.NotNull(value, nameof(value));
         return (T)Enum.Parse(typeof(T), value);
     }
 
@@ -228,13 +244,7 @@ public static class StringExtensions
         var inputBytes = Encoding.UTF8.GetBytes(str);
         var hashBytes = MD5.HashData(inputBytes);
 
-        var sb = new StringBuilder();
-        foreach (var hashByte in hashBytes)
-        {
-            sb.Append(hashByte.ToString("X2"));
-        }
-
-        return sb.ToString();
+        return Convert.ToHexString(hashBytes);
     }
 
     public static string ToSha256(this string str)
@@ -242,12 +252,179 @@ public static class StringExtensions
         var inputBytes = Encoding.UTF8.GetBytes(str);
         var hashBytes = SHA256.HashData(inputBytes);
 
-        var sb = new StringBuilder();
-        foreach (var hashByte in hashBytes)
+        return Convert.ToHexString(hashBytes);
+    }
+
+    #region 命名方法转换
+
+    /// <summary>
+    /// Converts PascalCase string to camelCase string.
+    /// </summary>
+    /// <param name="str">String to convert</param>
+    /// <param name="useCurrentCulture">set true to use current culture. Otherwise, invariant culture will be used.</param>
+    /// <param name="handleAbbreviations">set true to if you want to convert 'XYZ' to 'xyz'.</param>
+    /// <returns>camelCase of the string</returns>
+    public static string ToCamelCase(this string str, bool useCurrentCulture = false, bool handleAbbreviations = false)
+    {
+        if (str.IsNullOrWhiteSpace())
         {
-            sb.Append(hashByte.ToString("X2"));
+            return str;
         }
 
-        return sb.ToString();
+        if (str.Length == 1)
+        {
+            return useCurrentCulture ? str.ToLower() : str.ToLowerInvariant();
+        }
+
+        if (handleAbbreviations && IsAllUpperCase(str))
+        {
+            return useCurrentCulture ? str.ToLower() : str.ToLowerInvariant();
+        }
+
+        return (useCurrentCulture ? Char.ToLower(str[0]) : Char.ToLowerInvariant(str[0])) + str[1..];
     }
+
+    /// <summary>
+    /// Converts given PascalCase/camelCase string to sentence (by splitting words by space).
+    /// Example: "ThisIsSampleSentence" is converted to "This is a sample sentence".
+    /// </summary>
+    /// <param name="str">String to convert.</param>
+    /// <param name="useCurrentCulture">set true to use current culture. Otherwise, invariant culture will be used.</param>
+    public static string ToSentenceCase(this string str, bool useCurrentCulture = false)
+    {
+        if (str.IsNullOrWhiteSpace())
+        {
+            return str;
+        }
+
+        return useCurrentCulture
+            ? Regex.Replace(str, "[a-z][A-Z]", m => m.Value[0] + " " + Char.ToLower(m.Value[1]))
+            : Regex.Replace(str, "[a-z][A-Z]", m => m.Value[0] + " " + Char.ToLowerInvariant(m.Value[1]));
+    }
+
+    /// <summary>
+    /// Converts given PascalCase/camelCase string to kebab-case.
+    /// </summary>
+    /// <param name="str">String to convert.</param>
+    /// <param name="useCurrentCulture">set true to use current culture. Otherwise, invariant culture will be used.</param>
+    public static string ToKebabCase(this string str, bool useCurrentCulture = false)
+    {
+        if (str.IsNullOrWhiteSpace())
+        {
+            return str;
+        }
+
+        str = str.ToCamelCase();
+
+        return useCurrentCulture
+            ? Regex.Replace(str, "[a-z][A-Z]", m => m.Value[0] + "-" + Char.ToLower(m.Value[1]))
+            : Regex.Replace(str, "[a-z][A-Z]", m => m.Value[0] + "-" + Char.ToLowerInvariant(m.Value[1]));
+    }
+
+    /// <summary>
+    /// Converts given PascalCase/camelCase string to snake case.
+    /// Example: "ThisIsSampleSentence" is converted to "this_is_a_sample_sentence".
+    /// https://github.com/npgsql/npgsql/blob/dev/src/Npgsql/NameTranslation/NpgsqlSnakeCaseNameTranslator.cs#L51
+    /// </summary>
+    /// <param name="str">String to convert.</param>
+    /// <returns></returns>
+    public static string ToSnakeCase(this string str)
+    {
+        if (str.IsNullOrWhiteSpace())
+        {
+            return str;
+        }
+
+        var builder = new StringBuilder(str.Length + Math.Min(2, str.Length / 5));
+        var previousCategory = default(UnicodeCategory?);
+
+        for (var currentIndex = 0; currentIndex < str.Length; currentIndex++)
+        {
+            var currentChar = str[currentIndex];
+            if (currentChar == '_')
+            {
+                builder.Append('_');
+                previousCategory = null;
+                continue;
+            }
+
+            var currentCategory = Char.GetUnicodeCategory(currentChar);
+            switch (currentCategory)
+            {
+                case UnicodeCategory.UppercaseLetter:
+                case UnicodeCategory.TitlecaseLetter:
+                    if (previousCategory == UnicodeCategory.SpaceSeparator ||
+                        previousCategory == UnicodeCategory.LowercaseLetter ||
+                        (previousCategory != UnicodeCategory.DecimalDigitNumber &&
+                        previousCategory != null &&
+                        currentIndex > 0 &&
+                        currentIndex + 1 < str.Length &&
+                        Char.IsLower(str[currentIndex + 1])))
+                    {
+                        builder.Append('_');
+                    }
+
+                    currentChar = Char.ToLower(currentChar);
+                    break;
+
+                case UnicodeCategory.LowercaseLetter:
+                case UnicodeCategory.DecimalDigitNumber:
+                    if (previousCategory == UnicodeCategory.SpaceSeparator)
+                    {
+                        builder.Append('_');
+                    }
+
+                    break;
+
+                default:
+                    if (previousCategory != null)
+                    {
+                        previousCategory = UnicodeCategory.SpaceSeparator;
+                    }
+
+                    continue;
+            }
+
+            builder.Append(currentChar);
+            previousCategory = currentCategory;
+        }
+
+        return builder.ToString();
+    }
+
+    /// <summary>
+    /// Converts camelCase string to PascalCase string.
+    /// </summary>
+    /// <param name="str">String to convert</param>
+    /// <param name="useCurrentCulture">set true to use current culture. Otherwise, invariant culture will be used.</param>
+    /// <returns>PascalCase of the string</returns>
+    public static string ToPascalCase(this string str, bool useCurrentCulture = false)
+    {
+        if (str.IsNullOrWhiteSpace())
+        {
+            return str;
+        }
+
+        if (str.Length == 1)
+        {
+            return useCurrentCulture ? str.ToUpper() : str.ToUpperInvariant();
+        }
+
+        return (useCurrentCulture ? Char.ToUpper(str[0]) : Char.ToUpperInvariant(str[0])) + str[1..];
+    }
+
+    private static bool IsAllUpperCase(ReadOnlySpan<char> input)
+    {
+        for (int i = 0; i < input.Length; i++)
+        {
+            if (Char.IsLetter(input[i]) && !Char.IsUpper(input[i]))
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    #endregion
 }

@@ -1,5 +1,4 @@
 using System.Security.Cryptography;
-using System.Text;
 
 namespace System.IO;
 
@@ -50,25 +49,13 @@ public static class StreamExtensions
     {
         var hashBytes = MD5.HashData(stream);
 
-        var sb = new StringBuilder();
-        foreach (var hashByte in hashBytes)
-        {
-            sb.Append(hashByte.ToString("X2"));
-        }
-
-        return sb.ToString();
+        return Convert.ToHexString(hashBytes);
     }
 
     public static string ToSha256(this Stream stream)
     {
         var hashBytes = SHA256.HashData(stream);
 
-        var sb = new StringBuilder();
-        foreach (var hashByte in hashBytes)
-        {
-            sb.Append(hashByte.ToString("X2"));
-        }
-
-        return sb.ToString();
+        return Convert.ToHexString(hashBytes);
     }
 }

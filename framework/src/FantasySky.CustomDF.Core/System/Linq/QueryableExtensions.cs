@@ -11,7 +11,7 @@ public static class QueryableExtensions
     /// </summary>
     public static IQueryable<T> PageBy<T>(this IQueryable<T> query, int skipCount, int maxResultCount)
     {
-        Check.IsNotNull(query, nameof(query));
+        Check.NotNull(query, nameof(query));
 
         return query.Skip(skipCount).Take(maxResultCount);
     }
@@ -25,7 +25,7 @@ public static class QueryableExtensions
     /// <returns>Filtered or not filtered query based on <paramref name="condition"/></returns>
     public static IQueryable<T> WhereIf<T>(this IQueryable<T> query, bool condition, Expression<Func<T, bool>> predicate)
     {
-        Check.IsNotNull(query, nameof(query));
+        Check.NotNull(query, nameof(query));
 
         return condition
             ? query.Where(predicate)
@@ -40,7 +40,7 @@ public static class QueryableExtensions
     public static TQueryable OrderByIf<T, TQueryable>(this TQueryable query, string sorting)
         where TQueryable : IQueryable<T>
     {
-        Check.IsNotNull(query, nameof(query));
+        Check.NotNull(query, nameof(query));
 
         return sorting.IsNullOrWhiteSpace()
             ? (TQueryable)Dynamic.Core.DynamicQueryableExtensions.OrderBy(query, sorting)
@@ -57,7 +57,7 @@ public static class QueryableExtensions
     public static TQueryable OrderByIf<T, TQueryable>(this TQueryable query, bool condition, string sorting)
         where TQueryable : IQueryable<T>
     {
-        Check.IsNotNull(query, nameof(query));
+        Check.NotNull(query, nameof(query));
 
         return condition
             ? (TQueryable)Dynamic.Core.DynamicQueryableExtensions.OrderBy(query, sorting)

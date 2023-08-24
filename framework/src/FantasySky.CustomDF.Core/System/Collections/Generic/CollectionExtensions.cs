@@ -18,7 +18,7 @@ public static class CollectionExtensions
     /// <returns>Returns True if added, returns False if not.</returns>
     public static bool AddIfNotContains<T>([NotNull] this ICollection<T> source, T item)
     {
-        Check.IsNotNull(source, nameof(source));
+        Check.NotNull(source, nameof(source));
 
         if (source.Contains(item))
         {
@@ -38,7 +38,7 @@ public static class CollectionExtensions
     /// <returns>Returns the added items.</returns>
     public static IEnumerable<T> AddIfNotContains<T>([NotNull] this ICollection<T> source, IEnumerable<T> items)
     {
-        Check.IsNotNull(source, nameof(source));
+        Check.NotNull(source, nameof(source));
 
         var addedItems = new List<T>();
 

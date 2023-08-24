@@ -23,7 +23,7 @@ public static class ObjectHelper
         Func<TObject, TValue> valueFactory,
         params Type[] ignoreAttributeTypes)
     {
-        Check.IsNotNull(obj, nameof(obj));
+        Check.NotNull(obj, nameof(obj));
 
         var cacheKey = $"{obj.GetType().FullName}-" +
             $"{propertySelector}-" +
