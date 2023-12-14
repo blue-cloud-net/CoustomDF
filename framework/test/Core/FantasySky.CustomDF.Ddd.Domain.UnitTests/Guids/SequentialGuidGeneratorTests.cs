@@ -27,6 +27,6 @@ public class SequentialGuidGeneratorTests
             Console.WriteLine(guid);
         }
 
-        Assert.True(guids.Count == guids.Distinct().Count());
+        Assert.That(guids.Count == guids.Distinct().Count());
     }
 }

@@ -27,39 +27,42 @@
 	<PropertyGroup>
 
 		<!-- All Microsoft packages -->
-		<MicrosoftPackageVersion>7.0.0</MicrosoftPackageVersion>
+		<MicrosoftPackageVersion>8.0.0</MicrosoftPackageVersion>
 
 		<!-- All Microsoft AspNetCore packages -->
-		<MicrosoftAspNetCorePackageVersion>7.0.10</MicrosoftAspNetCorePackageVersion>
+		<MicrosoftAspNetCorePackageVersion>8.0.0</MicrosoftAspNetCorePackageVersion>
 
 		<!-- All Microsoft EntityFrameworkCore packages -->
-		<MicrosoftEntityFrameworkCorePackageVersion>7.0.10</MicrosoftEntityFrameworkCorePackageVersion>
+		<MicrosoftEntityFrameworkCorePackageVersion>8.0.0</MicrosoftEntityFrameworkCorePackageVersion>
 
 		<!-- Microsoft.NET.Test.Sdk https://www.nuget.org/packages/Microsoft.NET.Test.Sdk -->
-		<MicrosoftNETTestSdkPackageVersion>17.7.1</MicrosoftNETTestSdkPackageVersion>
+		<MicrosoftNETTestSdkPackageVersion>17.8.0</MicrosoftNETTestSdkPackageVersion>
 
 		<!-- NUnit https://www.nuget.org/packages/NUnit -->
-		<NUnitPackageVersion>3.13.3</NUnitPackageVersion>
+		<NUnitPackageVersion>4.0.1</NUnitPackageVersion>
 
 		<!-- NUnit3TestAdapter https://www.nuget.org/packages/NUnit3TestAdapter -->
 		<NUnit3TestAdapterPackageVersion>4.5.0</NUnit3TestAdapterPackageVersion>
 
 		<!-- NUnit.Analyzers https://www.nuget.org/packages/NUnit.Analyzers -->
-		<NUnitAnalyzersPackageVersion>3.6.1</NUnitAnalyzersPackageVersion>
+		<NUnitAnalyzersPackageVersion>3.10.0</NUnitAnalyzersPackageVersion>
 
 		<!-- NUnit.Analyzers https://www.nuget.org/packages/coverlet.collector -->
 		<coverletcollectorPackageVersion>6.0.0</coverletcollectorPackageVersion>
 
+		<IsTestProject Condition="$(MSBuildProjectFullPath.Contains('Tests')) and ($(MSBuildProjectName.EndsWith('.UnitTests')) or $(MSBuildProjectName.EndsWith('.Test.Base')))">true</IsTestProject>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="$(MSBuildProjectFullPath.Contains('test')) and ($(MSBuildProjectName.EndsWith('.Tests')) or $(MSBuildProjectName.EndsWith('.UnitTests')) or $(MSBuildProjectName.EndsWith('.TestBase')))">
-		<TargetFramework>net7.0</TargetFramework>
+	<PropertyGroup Condition="'$(IsTestProject)' == 'true'">
+		<TargetFramework>net8.0</TargetFramework>
 		<!-- 测试项目不打包 -->
 		<IsTestProject>true</IsTestProject>
 		<IsPackable>false</IsPackable>
+		<!-- 测试项目不生成文档 -->
+		<GenerateDocumentationFile>false</GenerateDocumentationFile>
 	</PropertyGroup>
 
-	<ItemGroup Condition="$(MSBuildProjectFullPath.Contains('test')) and ($(MSBuildProjectName.EndsWith('.Tests')) or $(MSBuildProjectName.EndsWith('.UnitTests')) or $(MSBuildProjectName.EndsWith('.TestBase')))">
+	<ItemGroup Condition="'$(IsTestProject)' == 'true'">
 		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="$(MicrosoftNETTestSdkPackageVersion)" />
 		<PackageReference Include="NUnit" Version="$(NUnitPackageVersion)" />
 		<PackageReference Include="NUnit3TestAdapter" Version="$(NUnit3TestAdapterPackageVersion)" />
@@ -69,5 +72,4 @@
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
 		</PackageReference>
 	</ItemGroup>
-
 </Project>
