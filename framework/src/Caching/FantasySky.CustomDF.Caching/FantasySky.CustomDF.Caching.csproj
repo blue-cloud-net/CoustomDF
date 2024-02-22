@@ -11,8 +11,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\FantasySky.CustomDF.Core\FantasySky.CustomDF.Core.csproj" />
-		<ProjectReference Include="..\..\FantasySky.CustomDF.Ddd.Domain\FantasySky.CustomDF.Ddd.Domain.csproj" />
+		<ProjectReference Include="..\..\Core\FantasySky.CustomDF.Core\FantasySky.CustomDF.Core.csproj" />
+		<ProjectReference Include="..\..\Core\FantasySky.CustomDF.Ddd.Domain\FantasySky.CustomDF.Ddd.Domain.csproj" />
 		<ProjectReference Include="..\..\Serialize\Json\FantasySky.CustomDF.Serialize.Json.SystemTextJson\FantasySky.CustomDF.Serialize.Json.SystemTextJson.csproj" />
 	</ItemGroup>
 

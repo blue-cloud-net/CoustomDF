@@ -10,8 +10,6 @@
 		<PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="7.0.0" />
 	</ItemGroup>
 
-
-
 	<ItemGroup>
 		<ProjectReference Include="..\FantasySky.CustomDF.EntityFrameworkCore\FantasySky.CustomDF.EntityFrameworkCore.csproj" />
 	</ItemGroup>

@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-	<Import Project="..\..\common.props" />
+	<Import Project="..\..\..\common.props" />
 
 	<PropertyGroup>
 		<PackageId>FantasySky.CustomDF.AspNetCore</PackageId>
@@ -16,7 +16,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\BackgroundJobs\FantasySky.CustomDF.BackgroundJobs\FantasySky.CustomDF.BackgroundJobs.csproj" />
+		<ProjectReference Include="..\..\BackgroundJobs\FantasySky.CustomDF.BackgroundJobs\FantasySky.CustomDF.BackgroundJobs.csproj" />
 		<ProjectReference Include="..\FantasySky.CustomDF.Core\FantasySky.CustomDF.Core.csproj" />
 	</ItemGroup>
 

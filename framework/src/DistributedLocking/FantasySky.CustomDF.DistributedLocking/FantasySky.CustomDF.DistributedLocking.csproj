@@ -11,7 +11,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\FantasySky.CustomDF.Core\FantasySky.CustomDF.Core.csproj" />
+		<ProjectReference Include="..\..\Core\FantasySky.CustomDF.Core\FantasySky.CustomDF.Core.csproj" />
 		<ProjectReference Include="..\FantasySky.CustomDF.DistributedLocking.Abstractions\FantasySky.CustomDF.DistributedLocking.Abstractions.csproj" />
 	</ItemGroup>
 

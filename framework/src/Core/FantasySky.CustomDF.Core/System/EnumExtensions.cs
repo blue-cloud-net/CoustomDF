@@ -3,6 +3,9 @@ using System.Reflection;
 
 namespace System;
 
+/// <summary>
+/// <see cref="Enum"/>的扩展方法
+/// </summary>
 public static class EnumExtensions
 {
     public static string GetName<T>(this T @enum) where T : struct, Enum
@@ -16,7 +19,7 @@ public static class EnumExtensions
         return Enum.GetName(@enum.GetType(), @enum);
     }
 
-    public static string? GetEnumDescription<T>(this T @enum) where T : Enum
+    public static string? GetEnumDisplayName<T>(this T @enum) where T : Enum
     {
         var fileds = @enum.GetType().GetFields();
 

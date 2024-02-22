@@ -7,7 +7,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\FantasySky.CustomDF.Core\FantasySky.CustomDF.Core.csproj" />
+		<ProjectReference Include="..\..\Core\FantasySky.CustomDF.Core\FantasySky.CustomDF.Core.csproj" />
 		<ProjectReference Include="..\FantasySky.CustomDF.Http.Client\FantasySky.CustomDF.Http.Client.csproj" />
 	</ItemGroup>
 

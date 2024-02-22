@@ -1,12 +1,12 @@
 namespace System;
 
 /// <summary>
-/// Extension methods for the <see cref="DayOfWeek"/>.
+/// <see cref="DayOfWeek"/>的扩展方法
 /// </summary>
 public static class DayOfWeekExtensions
 {
     /// <summary>
-    /// Check if given <see cref="DayOfWeek"/> value is weekend.
+    /// 检查<see cref="DayOfWeek"/>值是否为周末，即周六或周日.
     /// </summary>
     public static bool IsWeekend(this DayOfWeek dayOfWeek)
     {
@@ -14,7 +14,7 @@ public static class DayOfWeekExtensions
     }
 
     /// <summary>
-    /// Check if given <see cref="DayOfWeek"/> value is weekday.
+    /// 检查<see cref="DayOfWeek"/>值是否为周一到周五.
     /// </summary>
     public static bool IsWeekday(this DayOfWeek dayOfWeek)
     {
